@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -44,15 +45,28 @@ public class PlayerController : MonoBehaviour
         m_MovementControls = new PlayerInput();
         m_MovementControls.Enable();
         m_MovementControls.Player.Movement.performed += movement => PlayerMovement(movement.ReadValue<Vector2>());
-        m_MovementControls.Player.XButton.performed += xButton => Testo();
+    }
+
+
+    public void Update()
+    {
+
+        if (m_CurrentNode.IsDirectionWalkable(m_NextDirection))
+        {
+            MovetoNode(m_NextDirection);
+            return;
+        }
+        
+        if (m_CurrentNode.IsDirectionWalkable(m_CurrentDirection))
+        {
+            MovetoNode(m_CurrentDirection);
+        }
 
 
     }
 
-    
 
-    
-    public  IEnumerator DirectMovement(Transform aObject, FloorNode  aTargetNode, float aTimeUntilDone)
+    public  void DirectMovement(Transform aObject, FloorNode  aTargetNode, float aTimeUntilDone)
     {
         Vector3 NewNodePosition = new Vector3(aTargetNode.transform.position.x,aTargetNode.transform.position.y + 2,
             aTargetNode.transform.position.z);
@@ -60,30 +74,38 @@ public class PlayerController : MonoBehaviour
         float timeTaken = 0.0f;
         m_IsMoving = true;
         
-        while (aTimeUntilDone - timeTaken > 0)
-        {
-            if (Vector3.Distance(aObject.transform.position, NewNodePosition) < 0.05f)
-            {
-                timeTaken = aTimeUntilDone;
-            }
 
-            timeTaken += Time.deltaTime;
-            aObject.position = Vector3.Lerp(aObject.position, NewNodePosition, timeTaken /aTimeUntilDone );
-            yield return null;
+        if (Vector3.Distance(aObject.transform.position, NewNodePosition) < 0.05f)
+        {
+            m_CurrentNode = aTargetNode;
+
+
+            return;
+        }
+        
+        aObject.position = Vector3.MoveTowards(aObject.position, NewNodePosition, 0.05f);
+        
+
+
+        
+
+    }
+
+
+    public void MovementConstantTest()
+    {
+
+        if (m_CurrentNode.IsDirectionWalkable(m_NextDirection))
+        {
+            MovetoNode(m_NextDirection);
+
+            return;
         }
 
-        aObject.position = NewNodePosition;
-        m_CurrentNode = aTargetNode;
-        m_IsMoving = false;
-        yield return 0;
+        MovetoNode(m_CurrentDirection);
     }
 
 
-
-    public void Testo()
-    {
-        Debug.Log("TEEESSSto");
-    }
 
 
     public void PlayerMovement(Vector2 aDirection)
@@ -108,10 +130,7 @@ public class PlayerController : MonoBehaviour
         {
             m_NextDirection = Floor.FloorDirections.Down;
         }
-
-
-        MovetoNode(m_NextDirection);
-
+        
 
     }
 
@@ -119,6 +138,7 @@ public class PlayerController : MonoBehaviour
     {
         if (m_CurrentNode.IsDirectionWalkable(aDirection))
         {
+            m_CurrentDirection = aDirection;
             FloorNode TargetNode = m_CurrentFloorManager.GetNode(m_CurrentNode.m_PositionInGrid, aDirection);
         
             if (TargetNode == null)
@@ -127,7 +147,7 @@ public class PlayerController : MonoBehaviour
                 return;
             }
         
-            StartCoroutine(DirectMovement(transform, TargetNode, 0.6f));
+            DirectMovement(transform, TargetNode, 4.6f);
         }
     }
     
