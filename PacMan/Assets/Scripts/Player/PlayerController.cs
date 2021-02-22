@@ -7,7 +7,14 @@ public class PlayerController : MonoBehaviour
 {
  // Use this for initialization
 
-    [SerializeField]
+    public enum PacmanStates
+    {
+        Start,
+        Normal,
+        Death
+    }
+    
+    
     
    
     public Floor.FloorDirections[] m_CardinalDirections;
@@ -15,11 +22,16 @@ public class PlayerController : MonoBehaviour
     public Floor.FloorDirections m_NextDirection;
     public int m_CurrentDirectionValue;
 
+   // public List<> m_DeathObservers;
+
+    public Vector3 m_SpawnPosition;
+    public FloorNode m_StartNode;
     public FloorNode m_CurrentNode;
-    public FloorNode m_PreviousNode;
+    private FloorNode m_NextNode;
     
     public Vector2Int m_CurrentPosition;
-    
+
+    private PacmanStates m_PacmanState;
     
     private bool m_IsRotating;
     private bool m_IsMoving;
@@ -29,41 +41,69 @@ public class PlayerController : MonoBehaviour
 
     private PlayerInput m_MovementControls;
 
+    private float m_PacManSpeed = 15;
+    private float m_MiniumDistanceBetweenNodes = 0.05f;
+    
     public void Initialize ()
     {
         m_CardinalDirections = new []
         {
-            Floor.FloorDirections.Up, Floor.FloorDirections.Left, 
-            Floor.FloorDirections.Down,Floor.FloorDirections.Right
+            Floor.FloorDirections.Up, Floor.FloorDirections.Down,
+            Floor.FloorDirections.Left, Floor.FloorDirections.Right
         };
         
 
    
         m_CurrentDirectionValue = 0;
-        m_CurrentDirection = m_CardinalDirections[m_CurrentDirectionValue];
+        m_CurrentDirection = m_CardinalDirections[(short)Floor.FloorDirections.Left -1];
 
         m_MovementControls = new PlayerInput();
         m_MovementControls.Enable();
         m_MovementControls.Player.Movement.performed += movement => PlayerMovement(movement.ReadValue<Vector2>());
+        m_PacmanState = PacmanStates.Start;
     }
 
 
     public void Update()
     {
 
-        if (m_CurrentNode.IsDirectionWalkable(m_NextDirection))
+        if (m_PacmanState == PacmanStates.Normal)
         {
-            MovetoNode(m_NextDirection);
-            return;
-        }
-        
-        if (m_CurrentNode.IsDirectionWalkable(m_CurrentDirection))
-        {
-            MovetoNode(m_CurrentDirection);
-        }
 
+            if (m_CurrentNode.IsDirectionWalkable(m_NextDirection))
+            {
+                MovetoNode(m_NextDirection);
+                return;
+            }
+
+            if (m_CurrentNode.IsDirectionWalkable(m_CurrentDirection))
+            {
+                MovetoNode(m_CurrentDirection);
+            }
+        }
 
     }
+
+    public void SetPacManState(PacmanStates aPacmanStates)
+    {
+        m_PacmanState = aPacmanStates;
+    }
+
+    
+    public void Death()
+    {
+        Debug.Log("Pacman has been slain");
+        ReturnToSpawn();
+        GameManager.instance.ChangeLives(-1);
+    }
+
+
+    public void ReturnToSpawn()
+    {
+        transform.position = m_SpawnPosition;
+        m_CurrentNode = m_StartNode;
+    }
+    
 
 
     public  void DirectMovement(Transform aObject, FloorNode  aTargetNode, float aTimeUntilDone)
@@ -75,7 +115,7 @@ public class PlayerController : MonoBehaviour
         m_IsMoving = true;
         
 
-        if (Vector3.Distance(aObject.transform.position, NewNodePosition) < 0.05f)
+        if (Vector3.Distance(aObject.transform.position, NewNodePosition) < m_MiniumDistanceBetweenNodes)
         {
             m_CurrentNode = aTargetNode;
 
@@ -83,7 +123,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
         
-        aObject.position = Vector3.MoveTowards(aObject.position, NewNodePosition, 0.05f);
+        aObject.position = Vector3.MoveTowards(aObject.position, NewNodePosition, m_PacManSpeed * Time.deltaTime);
         
 
 

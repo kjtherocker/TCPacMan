@@ -11,10 +11,11 @@ GameObject:
   - component: {fileID: 4604282514244801367}
   - component: {fileID: 4604282514244801366}
   - component: {fileID: 4604282514244801361}
-  - component: {fileID: 4604282514244801360}
-  m_Layer: 0
+  - component: {fileID: 2798946941648607840}
+  - component: {fileID: 1257697770967765156}
+  m_Layer: 8
   m_Name: Pellet
-  m_TagString: Untagged
+  m_TagString: Gimmick
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26,9 +27,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4604282514244801363}
-  m_LocalRotation: {x: 0.0000035508715, y: 0.7071095, z: -0.000000853472, w: 0.7071041}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 47.88, y: 6.56995, z: 28.09}
-  m_LocalScale: {x: 0.0913594, y: 0.0913594, z: 0.091359384}
+  m_LocalScale: {x: 0.09135939, y: 0.0913594, z: 0.09135938}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -82,8 +83,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4604282514244801360
-MeshCollider:
+--- !u!136 &2798946941648607840
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -92,7 +93,19 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+  m_Radius: 5
+  m_Height: 6.823167e-12
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1257697770967765156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4604282514244801363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dd9e6c6923aedd41b2430b843a75a49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

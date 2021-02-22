@@ -35,7 +35,7 @@ public class FloorManager : MonoBehaviour
     public GameObject m_Gimmicks;
     
     private List<GameObject> m_PelletList;
-    private List<GameObject> m_GimmickList;
+    public List<GameObject> m_GimmickList;
     
     public void Start()
     {
@@ -49,9 +49,10 @@ public class FloorManager : MonoBehaviour
     }
 
 
-    
 
-    
+
+
+
     public void CreateGrid()
     {
         m_FloorCore.Intialize();
@@ -105,7 +106,16 @@ public class FloorManager : MonoBehaviour
             }
         }
 
-        if (m_GimmickList.Count > 0)
+        
+    
+
+    
+
+    }
+
+    public void GenerateGimmicks()
+    {
+        if (m_GimmickList.Count > 0 )
         {
             for (int i = m_GimmickList.Count - 1; i > 0; i--)
             {
@@ -114,7 +124,7 @@ public class FloorManager : MonoBehaviour
                     continue;
                 }
             
-                DestroyImmediate(m_GimmickList[i].gameObject);
+                Destroy(m_GimmickList[i].gameObject);
                 m_GimmickList.RemoveAt(i);
             }
         }
@@ -126,18 +136,15 @@ public class FloorManager : MonoBehaviour
             {
                 int LevelIndex = m_FloorCore.GetIndex(x, y);
                 //If there is no node then continue
-                if (aGoalBlueprint[LevelIndex] == (short) FloorGimmicks.Empty)
+                if (m_FloorCore.m_GoalsBlueprint[LevelIndex] == (short) FloorGimmicks.Empty)
                 {
                     continue;
                 }
                 
-                SpawnGimmick(m_FloorNodes[LevelIndex], aGoalBlueprint[LevelIndex]);
+                SpawnGimmick(m_FloorNodes[LevelIndex], m_FloorCore.m_GoalsBlueprint[LevelIndex]);
 
             }
         }
-
-    
-
     }
 
     public void SpawnGimmick(FloorNode aFloornode, short aGimmickType)
@@ -178,9 +185,10 @@ public class FloorManager : MonoBehaviour
         Vector3 m_PositionOffset = new Vector3(0,2,0);
 
         m_PacMan.m_CurrentNode = m_FloorNodes[LevelIndex];
-        m_PacMan.m_PreviousNode = m_FloorNodes[LevelIndex];
         m_PacMan.m_CurrentPosition = m_FloorCore.m_DefaultSpawnPosition;
-        
+
+        m_PacMan.m_StartNode = m_FloorNodes[LevelIndex];
+        m_PacMan.m_SpawnPosition = m_NodePosition + m_PositionOffset;
         m_PacMan.transform.position = m_NodePosition + m_PositionOffset;
         m_PacMan.Initialize();
     }
@@ -195,8 +203,8 @@ public class FloorManager : MonoBehaviour
         
         int FinalIndex = m_FloorCore.GetIndex( FinalPosition.x,FinalPosition.y) ;
         
-        Debug.Log("Current position " + CurrentPosition + " TargetDirection " + m_CardinalPositions[TargetDirection] + " Final index: " + FinalIndex
-         + " Final Position: " + FinalPosition);
+       // Debug.Log("Current position " + CurrentPosition + " TargetDirection " + m_CardinalPositions[TargetDirection] + " Final index: " + FinalIndex
+      //   + " Final Position: " + FinalPosition);
         
         return m_FloorNodes[FinalIndex] ;
     }

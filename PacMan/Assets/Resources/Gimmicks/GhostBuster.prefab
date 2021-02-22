@@ -11,10 +11,11 @@ GameObject:
   - component: {fileID: 1039041070382200935}
   - component: {fileID: 7117686693638570274}
   - component: {fileID: 7040986875578515219}
-  - component: {fileID: 7621434782839413125}
-  m_Layer: 0
+  - component: {fileID: 2580236587477678377}
+  - component: {fileID: 4103093238427681668}
+  m_Layer: 8
   m_Name: GhostBuster
-  m_TagString: Untagged
+  m_TagString: Gimmick
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1389446567742459104}
-  m_LocalRotation: {x: 0.0000035508715, y: 0.7071095, z: -0.000000853472, w: 0.7071041}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 47.88, y: 6.57, z: 30.25}
   m_LocalScale: {x: 0.57531756, y: 0.57531756, z: 0.57531744}
   m_Children: []
@@ -82,17 +83,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7621434782839413125
-MeshCollider:
+--- !u!136 &2580236587477678377
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1389446567742459104}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+  m_Radius: 5
+  m_Height: 9.0934e-12
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0.0000076293945}
+--- !u!114 &4103093238427681668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389446567742459104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e506562ddd0c6e347af109a92fe456b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
