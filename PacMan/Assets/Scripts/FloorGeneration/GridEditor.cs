@@ -13,10 +13,10 @@ public class GridEditor : Editor
     {
         DrawDefaultInspector();
 
-        FloorManager myScript = (FloorManager)target;
+        FloorManager floorManager = (FloorManager)target;
         if (GUILayout.Button("Build Grid"))
         {
-            myScript.CreateGrid();
+            floorManager.CreateGrid();
         }
     }
 }
