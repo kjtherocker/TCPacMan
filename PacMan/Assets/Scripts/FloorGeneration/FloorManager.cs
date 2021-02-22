@@ -9,6 +9,16 @@ using static UnityEditor.PrefabUtility;
 public class FloorManager : MonoBehaviour
 {
 
+    
+    public enum FloorGimmicks
+    {
+        Empty = 0,
+        Pellet = 1,
+        Ghostbuster = 2,
+        Strawberry = 3,
+       
+    }
+    
     //TODO spawn the arena somewhere and latch onto it
 
     public Floor m_FloorCore;
@@ -19,6 +29,13 @@ public class FloorManager : MonoBehaviour
     public GameObject m_Node;
 
     public PlayerController m_PacMan;
+    public GameObject m_Pellet;
+    public GameObject m_Ghostbuster;
+    
+    public GameObject m_Gimmicks;
+    
+    private List<GameObject> m_PelletList;
+    private List<GameObject> m_GimmickList;
     
     public void Start()
     {
@@ -54,7 +71,7 @@ public class FloorManager : MonoBehaviour
 
 
         m_FloorNodes = new FloorNode[m_FloorCore.m_GridDimensionX * m_FloorCore.m_GridDimensionY];
-        SetLevelNodes(m_FloorCore.m_FloorBlueprint);
+        SetLevelNodes(m_FloorCore.m_FloorBlueprint, m_FloorCore.m_GoalsBlueprint);
       
 
     }
@@ -69,7 +86,7 @@ public class FloorManager : MonoBehaviour
 
 
 
-    public void SetLevelNodes(short[] aLevelBlueprint)
+    public void SetLevelNodes(short[] aLevelBlueprint, short[] aGoalBlueprint)
     {
         for (int x = 0; x < m_FloorCore.m_GridDimensionX; x++)
         {
@@ -88,10 +105,68 @@ public class FloorManager : MonoBehaviour
             }
         }
 
+        if (m_GimmickList.Count > 0)
+        {
+            for (int i = m_GimmickList.Count - 1; i > 0; i--)
+            {
+                if(m_GimmickList[i] == null)
+                {
+                    continue;
+                }
+            
+                DestroyImmediate(m_GimmickList[i].gameObject);
+                m_GimmickList.RemoveAt(i);
+            }
+        }
+
+
+        for (int x = 0; x < m_FloorCore.m_GridDimensionX; x++)
+        {
+            for (int y = 0; y < m_FloorCore.m_GridDimensionY; y++)
+            {
+                int LevelIndex = m_FloorCore.GetIndex(x, y);
+                //If there is no node then continue
+                if (aGoalBlueprint[LevelIndex] == (short) FloorGimmicks.Empty)
+                {
+                    continue;
+                }
+                
+                SpawnGimmick(m_FloorNodes[LevelIndex], aGoalBlueprint[LevelIndex]);
+
+            }
+        }
 
     
 
     }
+
+    public void SpawnGimmick(FloorNode aFloornode, short aGimmickType)
+    {
+        GameObject gimmickToSpawn = null;
+        Vector3 nodeOffset = new Vector3(0,2,0);
+        switch (aGimmickType)
+        {
+            case (short)FloorGimmicks.Pellet:
+                gimmickToSpawn = Instantiate(m_Pellet,m_Gimmicks.transform);
+                gimmickToSpawn.transform.position = aFloornode.transform.position + nodeOffset;
+                
+                break;
+            
+            case (short)FloorGimmicks.Ghostbuster:
+                gimmickToSpawn = Instantiate(m_Ghostbuster,m_Gimmicks.transform);
+                gimmickToSpawn.transform.position = aFloornode.transform.position + nodeOffset;
+                
+                
+                break;
+            
+            case (short)FloorGimmicks.Strawberry:
+                break;
+            
+        }
+        
+        m_GimmickList.Add(gimmickToSpawn);
+    }
+
 
 
     public void SpawnCamera()
