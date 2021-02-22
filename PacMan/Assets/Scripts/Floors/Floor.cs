@@ -28,9 +28,11 @@ public class Floor : MonoBehaviour
     }
 
 
-    public short GridDimensionX = 10;
-    public short GridDimensionY = 10;
-    public short[] FloorBlueprint;
+    public short m_GridDimensionX = 10;
+    public short m_GridDimensionY = 10;
+    public short[] m_FloorBlueprint;
+    
+    public short[] m_GoalsBlueprint;
 
 
     public Vector2Int m_DefaultSpawnPosition;
@@ -38,8 +40,8 @@ public class Floor : MonoBehaviour
     // Start is called before the first frame update
     public virtual void Intialize()
     {
-        GridDimensionX = 10;
-        GridDimensionY = 10;
+        m_GridDimensionX = 10;
+        m_GridDimensionY = 10;
 
 
         
@@ -95,7 +97,7 @@ public class Floor : MonoBehaviour
 
     public int GetIndex(int aRow, int aColumn)
     {
-        return aRow * GridDimensionX + aColumn;
+        return aRow * m_GridDimensionX + aColumn;
     }
 
     public void SpawnCamera()

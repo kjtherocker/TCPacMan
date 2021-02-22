@@ -18,8 +18,9 @@ public class FloorManager : MonoBehaviour
 
     public GameObject m_Node;
 
+    public PlayerController m_PacMan;
     
-    public void Initialize()
+    public void Start()
     {
         SpawnGimmicks();
         m_CardinalPositions = new Dictionary<Floor.FloorDirections, Vector2Int>();
@@ -27,6 +28,7 @@ public class FloorManager : MonoBehaviour
         m_CardinalPositions.Add(Floor.FloorDirections.Down, new Vector2Int(1,0));
         m_CardinalPositions.Add(Floor.FloorDirections.Left, new Vector2Int(0,-1));
         m_CardinalPositions.Add(Floor.FloorDirections.Right, new Vector2Int(0,1));
+        SpawnCamera();
     }
 
 
@@ -51,8 +53,8 @@ public class FloorManager : MonoBehaviour
         }
 
 
-        m_FloorNodes = new FloorNode[m_FloorCore.GridDimensionX * m_FloorCore.GridDimensionY];
-        SetLevelNodes(m_FloorCore.FloorBlueprint);
+        m_FloorNodes = new FloorNode[m_FloorCore.m_GridDimensionX * m_FloorCore.m_GridDimensionY];
+        SetLevelNodes(m_FloorCore.m_FloorBlueprint);
       
 
     }
@@ -69,9 +71,9 @@ public class FloorManager : MonoBehaviour
 
     public void SetLevelNodes(short[] aLevelBlueprint)
     {
-        for (int x = 0; x < m_FloorCore.GridDimensionX; x++)
+        for (int x = 0; x < m_FloorCore.m_GridDimensionX; x++)
         {
-            for (int y = 0; y < m_FloorCore.GridDimensionY; y++)
+            for (int y = 0; y < m_FloorCore.m_GridDimensionY; y++)
             {
                 int LevelIndex = m_FloorCore.GetIndex(x, y);
                 //If there is no node then continue
@@ -85,12 +87,32 @@ public class FloorManager : MonoBehaviour
                 m_FloorNodes[LevelIndex].Initialize(aLevelBlueprint[LevelIndex]);
             }
         }
+
+
     
+
+    }
+
+
+    public void SpawnCamera()
+    {
+        int LevelIndex = m_FloorCore.GetIndex(
+            m_FloorCore.m_DefaultSpawnPosition.x, m_FloorCore.m_DefaultSpawnPosition.y);
+
+        Vector3 m_NodePosition = m_FloorNodes[LevelIndex].gameObject.transform.position;
+        Vector3 m_PositionOffset = new Vector3(0,2,0);
+
+        m_PacMan.m_CurrentNode = m_FloorNodes[LevelIndex];
+        m_PacMan.m_PreviousNode = m_FloorNodes[LevelIndex];
+        m_PacMan.m_CurrentPosition = m_FloorCore.m_DefaultSpawnPosition;
+        
+        m_PacMan.transform.position = m_NodePosition + m_PositionOffset;
+        m_PacMan.Initialize();
     }
 
 
 
-    
+
     public FloorNode GetNode(Vector2Int CurrentPosition,Floor.FloorDirections TargetDirection)
     {
         Vector2Int FinalPosition = new Vector2Int(CurrentPosition.x + m_CardinalPositions[TargetDirection].x,
