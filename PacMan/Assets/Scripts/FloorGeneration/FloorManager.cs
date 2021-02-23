@@ -39,16 +39,24 @@ public class FloorManager : MonoBehaviour
     
     public void Start()
     {
-        SpawnGimmicks();
         m_CardinalPositions = new Dictionary<Floor.FloorDirections, Vector2Int>();
         m_CardinalPositions.Add(Floor.FloorDirections.Up, new Vector2Int(-1,0));
         m_CardinalPositions.Add(Floor.FloorDirections.Down, new Vector2Int(1,0));
         m_CardinalPositions.Add(Floor.FloorDirections.Left, new Vector2Int(0,-1));
         m_CardinalPositions.Add(Floor.FloorDirections.Right, new Vector2Int(0,1));
         SpawnCamera();
+        m_FloorCore.SpawnGhosts();
     }
 
+    public void SpawnGhosts(Ghosts[] aGhosts)
+    {
+        for (int i = 0; i < aGhosts.Length; i++)
+        {
 
+            FloorNode tempFloorNode = GetNode(m_FloorCore.m_GhostSpawnPositions[aGhosts[i].m_GhostType]);
+            aGhosts[i].SetCurrentFloorNode(tempFloorNode);
+        }
+    }
 
 
 
@@ -76,15 +84,6 @@ public class FloorManager : MonoBehaviour
       
 
     }
-
-
-
-    public void SpawnGimmicks()
-    {
-        m_FloorCore.initializeGimmicks();
-
-    }
-
 
 
     public void SetLevelNodes(short[] aLevelBlueprint, short[] aGoalBlueprint)

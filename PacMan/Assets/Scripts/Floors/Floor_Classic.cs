@@ -67,10 +67,20 @@ public class Floor_Classic : Floor
         
 
         SpawnCamera();
+        SpawnGhosts();
     }
     
     public virtual void SpawnCamera()
     {
         m_DefaultSpawnPosition = new Vector2Int(12,6);
+    }
+    
+    public override void SpawnGhosts()
+    {
+        m_GhostSpawnPositions = new Dictionary<Ghosts.GhostTypes, Vector2Int>();
+        m_GhostSpawnPositions.Add(Ghosts.GhostTypes.Blinky, new Vector2Int(6,6));
+        m_GhostSpawnPositions.Add(Ghosts.GhostTypes.Inky, new Vector2Int(7,5));
+        m_GhostSpawnPositions.Add(Ghosts.GhostTypes.Pinky, new Vector2Int(7,6));
+        m_GhostSpawnPositions.Add(Ghosts.GhostTypes.Cylde, new Vector2Int(7,7));
     }
 }

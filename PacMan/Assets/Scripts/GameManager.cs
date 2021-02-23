@@ -10,16 +10,28 @@ public class GameManager : Singleton<GameManager>
     public TextMeshProUGUI m_TextScore;
     public TextMeshProUGUI m_TextLives;
     public GameObject m_TextGetReady;
+    
     private int m_Lives;
     private int m_Score;
 
     private FloorManager m_FloorManager;
     private PlayerController m_Pacman;
-
+    private Ghosts[] m_Ghosts;
     public void Start()
     {
         m_FloorManager = GetComponentInChildren<FloorManager>();
         m_Pacman = GetComponentInChildren<PlayerController>();
+        m_Ghosts = GetComponentsInChildren<Ghosts>();
+
+        m_FloorManager.Start();
+        
+        for (int i = 0; i < m_Ghosts.Length; i++)
+        {
+            m_Ghosts[i].Initialize();
+        }
+
+        m_FloorManager.SpawnGhosts(m_Ghosts);
+
         StartPacman();
     }
 

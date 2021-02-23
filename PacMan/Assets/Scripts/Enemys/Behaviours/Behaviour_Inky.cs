@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Behaviour_Inky : MonoBehaviour
+public class Behaviour_Inky : Behaviour
 {
     // Start is called before the first frame update
     void Start()

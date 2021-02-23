@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ghost_Pinky : MonoBehaviour
+public class Ghost_Pinky : Ghosts
 {
-    // Start is called before the first frame update
-    void Start()
+    public override void Initialize()
     {
-        
-    }
+        base.Initialize();
+        m_GhostBehaviours.Add(GhostStates.GhostUnique, new Behaviour_Pinky());
+        m_GhostBehaviours.Add(GhostStates.Agression, new Behaviour_Aggression());
+        m_GhostBehaviours.Add(GhostStates.Corner, new Behaviour_Corner());
 
-    // Update is called once per frame
-    void Update()
-    {
+        m_GhostType = GhostTypes.Pinky;
         
+        SetGhostBehaviour(GhostStates.Corner);
     }
 }

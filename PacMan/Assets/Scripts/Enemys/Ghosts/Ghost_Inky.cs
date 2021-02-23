@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ghost_Inky : MonoBehaviour
+public class Ghost_Inky : Ghosts
 {
-    // Start is called before the first frame update
-    void Start()
+    public override void Initialize()
     {
-        
-    }
+        base.Initialize();
+        m_GhostBehaviours.Add(GhostStates.GhostUnique, new Behaviour_Inky());
+        m_GhostBehaviours.Add(GhostStates.Agression, new Behaviour_Aggression());
+        m_GhostBehaviours.Add(GhostStates.Corner, new Behaviour_Corner());
 
-    // Update is called once per frame
-    void Update()
-    {
+        m_GhostType = GhostTypes.Inky;
         
+        SetGhostBehaviour(GhostStates.Corner);
     }
 }

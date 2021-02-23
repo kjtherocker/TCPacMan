@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ghost_Clyde : MonoBehaviour
+public class Ghost_Clyde : Ghosts
 {
-    // Start is called before the first frame update
-    void Start()
+    public override void Initialize()
     {
-        
-    }
+        base.Initialize();
+        m_GhostBehaviours.Add(GhostStates.GhostUnique, new Behaviour_Clyde());
+        m_GhostBehaviours.Add(GhostStates.Agression, new Behaviour_Aggression());
+        m_GhostBehaviours.Add(GhostStates.Corner, new Behaviour_Corner());
 
-    // Update is called once per frame
-    void Update()
-    {
+        m_GhostType = GhostTypes.Cylde;
         
+        SetGhostBehaviour(GhostStates.Corner);
     }
 }

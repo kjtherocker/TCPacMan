@@ -35,6 +35,7 @@ public class Floor : MonoBehaviour
     public short[] m_GoalsBlueprint;
 
 
+    public Dictionary<Ghosts.GhostTypes, Vector2Int> m_GhostSpawnPositions;
     public Vector2Int m_DefaultSpawnPosition;
 
     // Start is called before the first frame update
@@ -43,7 +44,7 @@ public class Floor : MonoBehaviour
         m_GridDimensionX = 10;
         m_GridDimensionY = 10;
 
-
+        
         
         
         
@@ -104,8 +105,8 @@ public class Floor : MonoBehaviour
     {
         m_DefaultSpawnPosition = new Vector2Int(0,1);
     }
-    
-    public void initializeGimmicks()
+
+    public virtual void SpawnGhosts()
     {
 
     }
