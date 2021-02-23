@@ -34,6 +34,7 @@ public class GameManager : Singleton<GameManager>
         m_FloorManager.GenerateGimmicks();
         m_FloorManager.m_PacMan = m_Pacman;
         m_Pacman.SetPacManState(PlayerController.PacmanStates.Start);
+        m_Pacman.ReturnToSpawn();
         StartCoroutine(StartDelay());
         m_TextGetReady.gameObject.SetActive(true);
 
@@ -68,7 +69,7 @@ public class GameManager : Singleton<GameManager>
 
         m_Lives += aLives;
         m_TextLives.text = m_Lives.ToString();
-        
+        m_Pacman.ReturnToSpawn();
         StartCoroutine(StartDelay());
     }
 

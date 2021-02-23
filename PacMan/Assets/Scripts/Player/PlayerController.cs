@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
 
     private float m_PacManSpeed = 15;
     private float m_MiniumDistanceBetweenNodes = 0.05f;
-    private float m_MaxDistanceForDirectionChange = 2.55f;
+    private float m_MaxDistanceForDirectionChange = 2.25f;
     
     public void Initialize ()
     {
@@ -70,6 +70,9 @@ public class PlayerController : MonoBehaviour
 
         if (m_PacmanState == PacmanStates.Normal)
         {
+            
+            
+            
 
             if (m_CurrentNode.IsDirectionWalkable(m_NextDirection))
             {
@@ -132,7 +135,10 @@ public class PlayerController : MonoBehaviour
         
         aObject.position = Vector3.MoveTowards(aObject.position, NewNodePosition, m_PacManSpeed * Time.deltaTime);
         
-
+        Vector3 relativePos = NewNodePosition - transform.position;
+       
+        Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+        transform.rotation = rotation;
 
         
 
