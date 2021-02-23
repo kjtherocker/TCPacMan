@@ -34,7 +34,7 @@ public class FloorManager : MonoBehaviour
     
     public GameObject m_Gimmicks;
     
-    private List<GameObject> m_PelletList;
+    private List<GameObject> m_PelletPool;
     public List<GameObject> m_GimmickList;
     
     public void Start()
@@ -156,6 +156,7 @@ public class FloorManager : MonoBehaviour
             case (short)FloorGimmicks.Pellet:
                 gimmickToSpawn = Instantiate(m_Pellet,m_Gimmicks.transform);
                 gimmickToSpawn.transform.position = aFloornode.transform.position + nodeOffset;
+            //    m_PelletPool.Add(gimmickToSpawn);
                 
                 break;
             

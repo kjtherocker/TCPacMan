@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
 
     private float m_PacManSpeed = 15;
     private float m_MiniumDistanceBetweenNodes = 0.05f;
+    private float m_MaxDistanceForDirectionChange = 2.55f;
     
     public void Initialize ()
     {
@@ -72,8 +73,14 @@ public class PlayerController : MonoBehaviour
 
             if (m_CurrentNode.IsDirectionWalkable(m_NextDirection))
             {
-                MovetoNode(m_NextDirection);
-                return;
+                //Maximum possible distance that we can make last minute changes to our direction
+                if(Vector3.Distance(transform.position, m_CurrentNode.transform.position) < m_MaxDistanceForDirectionChange)
+                {
+
+                    MovetoNode(m_NextDirection);
+                    return;
+                }
+
             }
 
             if (m_CurrentNode.IsDirectionWalkable(m_CurrentDirection))
