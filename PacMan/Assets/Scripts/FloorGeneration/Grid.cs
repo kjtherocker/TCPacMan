@@ -42,17 +42,7 @@ public class Grid : Singleton<Grid>
         
     }
 
-    public void SetHeuristicToZero()
-    {
-        for (int x = 0; x < m_GridDimensions.x; x++)
-        {
-            for (int y = 0; y < m_GridDimensions.y; y++)
-            {
-                m_GridPathArray[x, y].m_Heuristic = 0;
-                m_GridPathArray[x, y].m_IsGoal = false;
-            }
-        }
-    }
+
     
     
 
@@ -133,12 +123,7 @@ public class Grid : Singleton<Grid>
                  break;
              }
 
-             if (m_GridPathToGoal[m_GridPathToGoal.Count - 1].m_IsGoal == true)
-            {
-                break;
-            }
-            
-            m_GridPathToGoal.Add(CheckNeighborsForLowestNumber(m_GridPathToGoal[m_GridPathToGoal.Count - 1].m_PositionInGrid));
+             m_GridPathToGoal.Add(CheckNeighborsForLowestNumber(m_GridPathToGoal[m_GridPathToGoal.Count - 1].m_PositionInGrid));
         }
         
         return m_GridPathToGoal;

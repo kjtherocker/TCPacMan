@@ -6,37 +6,35 @@ using UnityEngine;
 
 [ExecuteInEditMode]
 
+
+
+[Serializable]
+public class NodeInfo
+{
+    public int m_MovementCost;
+    public bool m_IsGoal;
+    public Vector2Int m_PositionInGrid;
+    public bool m_HeuristicCalculated;
+    public List<FloorNode> m_Neighbours = new List<FloorNode>();
+}
+
+
 public class FloorNode : Cell
 {
 
     public delegate void WalkOnTopActivation();
 
     public WalkOnTopActivation m_WalkOnTopDelegate;
-    
-
-    
 
     public int m_Heuristic;
     public Vector2Int m_PositionInGrid;
-
-    public int m_MovementCost;
-    public int m_NodeHeight;
-    public float m_NodeHeightOffset;
-    public bool m_IsGoal;
-    public bool m_HeuristicCalculated;
     
-    
-
-    List<FloorNode> neighbours = null;
     public Grid m_Grid;
-
-
-
-
-    public List<Floor.FloorDirections> m_WalkableDirections;
     
+    private NodeInfo m_NodeInfo;
+    
+    public List<Floor.FloorDirections> m_WalkableDirections;
     public List<Floor.FloorDirections> m_InteractableDirections;
-
     public List<GameObject> NodeWalls;
     
     public FloorManager m_NodeFloorManager;
@@ -44,13 +42,22 @@ public class FloorNode : Cell
 
     // Use this for initialization
 
-
+    public int THISISTESTREMOVE = 0;
 
     public void Initialize(short aWalkableDirections)
     {
-        m_MovementCost = 1;
         SetWalkableDirections(aWalkableDirections);
+        
     }
+
+    public NodeInfo GetNodeInfo()
+    {
+        m_NodeInfo = new NodeInfo();
+        m_NodeInfo.m_Neighbours = GetNeighbours(GameManager.instance.m_FloorManager);
+        m_NodeInfo.m_PositionInGrid = m_PositionInGrid; 
+        return m_NodeInfo;
+    }
+
 
     public void SetWalkOnTopDelegate(WalkOnTopActivation aWalkOnTopFunction)
     {
@@ -188,26 +195,23 @@ public class FloorNode : Cell
         Floor.FloorDirections.Up, Floor.FloorDirections.Down, Floor.FloorDirections.Left, Floor.FloorDirections.Right
     };
     
-    public  List<FloorNode> GetNeighbours(FloorNode[] aCells)
+    public  List<FloorNode> GetNeighbours(FloorManager aFloorManager)
     {
-        if (neighbours == null)
-        {
-            neighbours = new List<FloorNode>(4);
-            foreach ( Floor.FloorDirections direction in _directions)
-            {
-                if (m_WalkableDirections.Contains(direction))
-                {
-                    FloorNode neighbour = GameManager.instance.m_FloorManager.GetNode(m_PositionInGrid, direction);
-                    if (neighbour == null)
-                    {
-                        continue;
-                    }
-                    
-                    neighbours.Add(neighbour);
-                }
-            }
-        }
-
+        List<FloorNode> neighbours = new List<FloorNode>(4);
+         foreach ( Floor.FloorDirections direction in _directions)
+         {
+             if (m_WalkableDirections.Contains(direction))
+             {
+                 FloorNode neighbour = aFloorManager.GetNode(m_PositionInGrid, direction);
+                 if (neighbour == null)
+                 {
+                     continue;
+                 }
+                 
+                 neighbours.Add(neighbour);
+             }
+         }
+         
         return neighbours;
     }
 

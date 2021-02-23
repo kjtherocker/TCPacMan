@@ -15,28 +15,35 @@ public class GameManager : Singleton<GameManager>
     private int m_Score;
 
     public FloorManager m_FloorManager;
-    private PlayerController m_Pacman;
+    public PlayerController m_Pacman;
     private Ghosts[] m_Ghosts;
     public void Start()
     {
         m_FloorManager = GetComponentInChildren<FloorManager>();
         m_Pacman = GetComponentInChildren<PlayerController>();
         m_Ghosts = GetComponentsInChildren<Ghosts>();
-
-        m_FloorManager.Start();
         
+        m_FloorManager.Start();
+        m_FloorManager.SpawnNodeInfo();
         //Initializing the ghosts 
         for (int i = 0; i < m_Ghosts.Length; i++)
         {
             m_Ghosts[i].SetPacman(m_Pacman);
             m_Ghosts[i].Initialize();
+
         }
 
         m_FloorManager.SpawnGhosts(m_Ghosts);
-
+        
+        for (int i = 0; i < m_Ghosts.Length; i++)
+        {
+            m_Ghosts[i].CopyFloor(m_FloorManager.m_NodeInfoArray);
+        }
         
         StartPacman();
     }
+    
+    
 
     public void StartPacman()
     {

@@ -4,60 +4,6 @@ using System.Linq;
 using UnityEngine;
 using System;
 
-public class Pathfinder : IPathfinding
-{
-    public Dictionary<FloorNode, List<FloorNode>> findAllPaths(Dictionary<FloorNode, Dictionary<FloorNode, int>> edges, FloorNode originNode,int m_Range)
-    {
-        IPriorityQueue<FloorNode> frontier = new HeapPriorityQueue<FloorNode>();
-        frontier.Enqueue(originNode, 0);
-
-        Dictionary<FloorNode, FloorNode> cameFrom = new Dictionary<FloorNode, FloorNode>();
-        cameFrom.Add(originNode, default(FloorNode));
-        Dictionary<FloorNode, int> costSoFar = new Dictionary<FloorNode, int>();
-        costSoFar.Add(originNode, 0);
-        while (frontier.Count != 0)
-        {
-            var current = frontier.Dequeue();
-            List<FloorNode> neighbours = GetNeigbours(edges, current);
-            foreach (FloorNode neighbour in neighbours)
-            {
-                int newCost = costSoFar[current] + edges[current][neighbour];
-                if (!costSoFar.ContainsKey(neighbour) || newCost < costSoFar[neighbour])
-                {
-                    if (newCost > m_Range)
-                    {
-                        break;
-                    }
-                    
-
-                    costSoFar[neighbour] = newCost;
-                    cameFrom[neighbour] = current;
-                    frontier.Enqueue(neighbour, newCost);
-                }
-            }
-        }
-        Dictionary<FloorNode, List<FloorNode>> paths = new Dictionary<FloorNode, List<FloorNode>>();
-        foreach (FloorNode destination in cameFrom.Keys)
-        {
-            List<FloorNode> path = new List<FloorNode>();
-            var current = destination;
-            while (!current.Equals(originNode))
-            {
-                path.Add(current);
-                current = cameFrom[current];
-            }
-            paths.Add(destination, path);
-        }
-        return paths;
-    }
-
-
-    private int Heuristic<T>(T a, T b) where T : IGraphNode
-    {
-        return a.GetDistance(b);
-    }
-}
-
 
 
 

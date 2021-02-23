@@ -101,6 +101,12 @@ public class Floor : MonoBehaviour
         return aRow * m_GridDimensionX + aColumn;
     }
 
+    public int GetIndex(Vector2Int aPosition)
+    {
+        return aPosition.x * m_GridDimensionX + aPosition.y;
+    }
+
+    
     public void SpawnCamera()
     {
         m_DefaultSpawnPosition = new Vector2Int(0,1);

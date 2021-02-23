@@ -28,6 +28,6 @@ public class Ghost_Blinky : Ghosts
 
     public void Update()
     {
-        CurrentBehaviour.MoveTo();
+//        CurrentBehaviour.MoveTo();
     }
 }

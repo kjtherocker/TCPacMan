@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.Assertions.Must;
 using static UnityEditor.PrefabUtility;
 
 [ExecuteInEditMode]
@@ -26,6 +27,9 @@ public class FloorManager : MonoBehaviour
     public FloorNode m_FloorNodePrefab;
     private Dictionary<Floor.FloorDirections, Vector2Int>  m_CardinalPositions;
 
+    public NodeInfo[] m_NodeInfoArray;
+    
+    
     public GameObject m_Node;
 
     public PlayerController m_PacMan;
@@ -39,13 +43,38 @@ public class FloorManager : MonoBehaviour
     
     public void Start()
     {
+        InitializeCardinalPositions();
+        SpawnCamera();
+        m_FloorCore.SpawnGhosts();
+    }
+
+
+    public void InitializeCardinalPositions()
+    {
+        if (m_CardinalPositions != null)
+        {
+            return;
+        }
+
         m_CardinalPositions = new Dictionary<Floor.FloorDirections, Vector2Int>();
         m_CardinalPositions.Add(Floor.FloorDirections.Up, new Vector2Int(-1,0));
         m_CardinalPositions.Add(Floor.FloorDirections.Down, new Vector2Int(1,0));
         m_CardinalPositions.Add(Floor.FloorDirections.Left, new Vector2Int(0,-1));
         m_CardinalPositions.Add(Floor.FloorDirections.Right, new Vector2Int(0,1));
-        SpawnCamera();
-        m_FloorCore.SpawnGhosts();
+    }
+
+    public void SpawnNodeInfo()
+    {
+        m_NodeInfoArray = new NodeInfo[20 * 20];
+        for (int i = 0; i < m_NodeInfoArray.Length; i++)
+        {
+            if (m_FloorNodes[i] == null)
+            {
+                continue;
+            }
+
+            m_NodeInfoArray[i] = m_FloorNodes[i].GetNodeInfo();
+        }
     }
 
     public void SpawnGhosts(Ghosts[] aGhosts)
@@ -80,13 +109,30 @@ public class FloorManager : MonoBehaviour
 
 
         m_FloorNodes = new FloorNode[m_FloorCore.m_GridDimensionX * m_FloorCore.m_GridDimensionY];
-        SetLevelNodes(m_FloorCore.m_FloorBlueprint, m_FloorCore.m_GoalsBlueprint);
-      
+        SetLevelNodes(m_FloorCore.m_FloorBlueprint);
+        
+        SetLevelNodesNeightbors();
 
     }
 
+    public void SetLevelNodesNeightbors()
+    {
+        for (int x = 0; x < m_FloorCore.m_GridDimensionX; x++)
+        {
+            for (int y = 0; y < m_FloorCore.m_GridDimensionY; y++)
+            {
+                int LevelIndex = m_FloorCore.GetIndex(x, y);
+                //If there is no node then continue
+                if (m_FloorNodes[LevelIndex] == null)
+                {
+                    continue;
+                }
+            }
+        }
+    }
 
-    public void SetLevelNodes(short[] aLevelBlueprint, short[] aGoalBlueprint)
+
+    public void SetLevelNodes(short[] aLevelBlueprint)
     {
         for (int x = 0; x < m_FloorCore.m_GridDimensionX; x++)
         {
@@ -104,12 +150,6 @@ public class FloorManager : MonoBehaviour
                 m_FloorNodes[LevelIndex].Initialize(aLevelBlueprint[LevelIndex]);
             }
         }
-
-        
-    
-
-    
-
     }
 
     public void GenerateGimmicks()
@@ -198,6 +238,7 @@ public class FloorManager : MonoBehaviour
 
     public FloorNode GetNode(Vector2Int CurrentPosition,Floor.FloorDirections TargetDirection)
     {
+        InitializeCardinalPositions();
         Vector2Int FinalPosition = new Vector2Int(CurrentPosition.x + m_CardinalPositions[TargetDirection].x,
             CurrentPosition.y + m_CardinalPositions[TargetDirection].y );
         
