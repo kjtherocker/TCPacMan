@@ -11,6 +11,11 @@ public class Ghost_Pinky : Ghosts
         m_GhostBehaviours.Add(GhostStates.Agression, new Behaviour_Aggression());
         m_GhostBehaviours.Add(GhostStates.Corner, new Behaviour_Corner());
 
+        foreach (var behaviour in m_GhostBehaviours)
+        {
+            behaviour.Value.SetGhost(this);
+        }
+        
         m_GhostType = GhostTypes.Pinky;
         
         SetGhostBehaviour(GhostStates.Corner);

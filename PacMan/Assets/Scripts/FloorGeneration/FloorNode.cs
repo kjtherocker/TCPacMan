@@ -183,28 +183,38 @@ public class FloorNode : Cell
    }
 
 
-   protected static readonly Vector2[] _directions =
+   protected static readonly Floor.FloorDirections[] _directions =
     {
-        new Vector2(1, 0), new Vector2(-1, 0), new Vector2(0, 1), new Vector2(0, -1)
+        Floor.FloorDirections.Up, Floor.FloorDirections.Down, Floor.FloorDirections.Left, Floor.FloorDirections.Right
     };
     
-    public override List<FloorNode> GetNeighbours(List<FloorNode> cells)
+    public  List<FloorNode> GetNeighbours(FloorNode[] aCells)
     {
         if (neighbours == null)
         {
             neighbours = new List<FloorNode>(4);
-            foreach (var direction in _directions)
+            foreach ( Floor.FloorDirections direction in _directions)
             {
-                var neighbour = cells.Find(c => c.m_PositionInGrid == m_PositionInGrid + direction);
-                if (neighbour == null) continue;
-
-                neighbours.Add(neighbour);
+                if (m_WalkableDirections.Contains(direction))
+                {
+                    FloorNode neighbour = GameManager.instance.m_FloorManager.GetNode(m_PositionInGrid, direction);
+                    if (neighbour == null)
+                    {
+                        continue;
+                    }
+                    
+                    neighbours.Add(neighbour);
+                }
             }
         }
 
         return neighbours;
     }
 
+    public override List<FloorNode> GetNeighbours(List<FloorNode> cells)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 

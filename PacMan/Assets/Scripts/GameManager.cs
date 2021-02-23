@@ -14,7 +14,7 @@ public class GameManager : Singleton<GameManager>
     private int m_Lives;
     private int m_Score;
 
-    private FloorManager m_FloorManager;
+    public FloorManager m_FloorManager;
     private PlayerController m_Pacman;
     private Ghosts[] m_Ghosts;
     public void Start()
@@ -25,13 +25,16 @@ public class GameManager : Singleton<GameManager>
 
         m_FloorManager.Start();
         
+        //Initializing the ghosts 
         for (int i = 0; i < m_Ghosts.Length; i++)
         {
+            m_Ghosts[i].SetPacman(m_Pacman);
             m_Ghosts[i].Initialize();
         }
 
         m_FloorManager.SpawnGhosts(m_Ghosts);
 
+        
         StartPacman();
     }
 

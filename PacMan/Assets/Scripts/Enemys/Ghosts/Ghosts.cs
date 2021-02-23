@@ -29,9 +29,17 @@ public class Ghosts : MonoBehaviour
     public FloorNode m_CurrentNode;
     public GhostTypes m_GhostType;
 
+    private PlayerController m_Pacman;
+    
     public virtual void Initialize()
     {
         m_GhostBehaviours = new Dictionary<GhostStates, Behaviour>();
+    }
+
+    public void SetPacman(PlayerController aPlayerController)
+    {
+        m_Pacman = aPlayerController;
+
     }
 
     public virtual void SetCurrentFloorNode( FloorNode aFloorNode)
