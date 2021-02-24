@@ -19,7 +19,7 @@ public class NodeInfo
 }
 
 
-public class FloorNode : Cell
+public class FloorNode : MonoBehaviour
 {
 
     public delegate void WalkOnTopActivation();
@@ -214,11 +214,7 @@ public class FloorNode : Cell
          
         return neighbours;
     }
-
-    public override List<FloorNode> GetNeighbours(List<FloorNode> cells)
-    {
-        throw new NotImplementedException();
-    }
+    
 }
 
 

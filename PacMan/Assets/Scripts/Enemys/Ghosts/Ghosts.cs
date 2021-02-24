@@ -33,7 +33,6 @@ public class Ghosts : MonoBehaviour
 
     private List<NodeInfo> m_OpenList;
     private NodeInfo[] m_FloorCopy;
-    
     public virtual void Initialize()
     {
         m_GhostBehaviours = new Dictionary<GhostStates, Behaviour>();
@@ -57,35 +56,127 @@ public class Ghosts : MonoBehaviour
             m_FloorCopy[i].m_Neighbours = aFloorCopy[i].m_Neighbours;
         }
 
-        HeuristicTesto(m_FloorCopy , m_Pacman.m_CurrentNode.m_PositionInGrid);
+        StartCoroutine(FollowPath(CalculatePath(m_Pacman.m_CurrentNode.m_PositionInGrid)));
     }
 
 
-    public void HeuristicTesto(NodeInfo[] aFloorCopy, Vector2Int aStart)
+    public void ResetFloorArray()
     {
+        for (int i = 0; i < m_FloorCopy.Length; i++)
+        {
+            if (m_FloorCopy[i] == null)
+            {
+                continue;
+            }
+            
+            m_FloorCopy[i].m_IsGoal = false;
+            m_FloorCopy[i].m_MovementCost = -1;
+        }
+    }
+
+    public List<FloorNode> CalculatePath( Vector2Int aStart)
+    {
+        ResetFloorArray();
+        
+        //Calculating path Heuristic
         int Spawnindex = GameManager.instance.m_FloorManager.m_FloorCore.GetIndex(aStart.x, aStart.y);
         int m_CostSoFar = 0;
         
-        aFloorCopy[Spawnindex].m_IsGoal = true;
-        aFloorCopy[Spawnindex].m_HeuristicCalculated = true;
-        aFloorCopy[Spawnindex].m_MovementCost = 0;
+        m_FloorCopy[Spawnindex].m_IsGoal = true;
+        m_FloorCopy[Spawnindex].m_HeuristicCalculated = true;
+        m_FloorCopy[Spawnindex].m_MovementCost = 0;
 
-        m_OpenList.Add(aFloorCopy[Spawnindex]);
+        m_OpenList.Add(m_FloorCopy[Spawnindex]);
 
-
-
-        while (m_OpenList.Count > 0)
+        bool isCalculatingHeuristic = true;
+        
+        while (isCalculatingHeuristic)
         {
-            AddNeighborsHeuristic(m_OpenList[0].m_PositionInGrid);
+            if (m_OpenList.Count <= 0)
+            {
+                isCalculatingHeuristic = false;
+            }
+            
+            NodeInfo openNodeInfo = m_OpenList[0];
+
+            if (openNodeInfo.m_PositionInGrid == m_CurrentNode.m_PositionInGrid)
+            {
+                isCalculatingHeuristic = false;
+            }
+            
+            AddNeighborsHeuristic(openNodeInfo.m_PositionInGrid);
             m_OpenList.RemoveAt(0);
         }
 
+        
+        //Calculating the quckest path to goal
+        List<FloorNode> m_PathToFollow = new List<FloorNode>();
 
+        FloorNode GetFloornode = GameManager.instance.m_FloorManager.GetNode(m_CurrentNode.m_PositionInGrid);
 
+        int currentindex = GameManager.instance.m_FloorManager.m_FloorCore.GetIndex( m_CurrentNode.m_PositionInGrid);
+        
+        m_PathToFollow.Add(GetFloornode);
 
+        while (m_PathToFollow.Count -1 < m_FloorCopy[currentindex].m_MovementCost)
+        {
+            int pathiIndex = GameManager.instance.m_FloorManager.m_FloorCore.GetIndex(m_PathToFollow[m_PathToFollow.Count -1].m_PositionInGrid);
+            m_PathToFollow.Add(CheckNeighborsForLowestNumber(m_FloorCopy[pathiIndex]));
+        }
 
+        return m_PathToFollow;
     }
 
+    IEnumerator FollowPath(List<FloorNode> aPath)
+    {
+        if (aPath.Count <= 0)
+        {
+            yield break;
+        }
+
+        gameObject.transform.position = aPath[0].transform.position + new Vector3(0,2,0);
+        m_CurrentNode = aPath[0];
+        aPath.RemoveAt(0);
+
+        
+        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(FollowPath(aPath));
+    }
+
+
+    public FloorNode CheckNeighborsForLowestNumber(NodeInfo aNodeInfo)
+    {
+        float TempHeuristic = 100;
+        FloorNode TempNode = null;
+        
+
+        foreach (FloorNode floorNode in aNodeInfo.m_Neighbours)
+        {
+
+                int pathiIndex = GameManager.instance.m_FloorManager.m_FloorCore.GetIndex(floorNode.m_PositionInGrid);
+                if (floorNode == null)
+                {
+                    Debug.Log("neighbour  doesnt exist");
+                    continue;
+                }
+
+                if (m_FloorCopy[pathiIndex].m_MovementCost  == -1)
+                {
+                   // Debug.Log("neighbour heuristic is  -1");
+                    continue;
+                }
+
+                if (m_FloorCopy[pathiIndex].m_MovementCost < TempHeuristic)
+                {
+                    TempHeuristic = m_FloorCopy[pathiIndex].m_MovementCost;
+                    TempNode = floorNode;
+                }
+            
+        }
+        
+        return TempNode;
+    }
+    
     public void GetLowestHeuristic()
     {
         
