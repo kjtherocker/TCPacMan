@@ -82,5 +82,12 @@ public class Floor_Classic : Floor
         m_GhostSpawnPositions.Add(Ghosts.GhostTypes.Inky, new Vector2Int(7,5));
         m_GhostSpawnPositions.Add(Ghosts.GhostTypes.Pinky, new Vector2Int(7,6));
         m_GhostSpawnPositions.Add(Ghosts.GhostTypes.Cylde, new Vector2Int(7,7));
+        
+        m_GhostCornerPositions = new Dictionary<Ghosts.GhostTypes, Vector2Int>();
+        
+        m_GhostCornerPositions.Add(Ghosts.GhostTypes.Blinky, new Vector2Int(0,12));
+        m_GhostCornerPositions.Add(Ghosts.GhostTypes.Inky, new Vector2Int(0,0));
+        m_GhostCornerPositions.Add(Ghosts.GhostTypes.Pinky, new Vector2Int(16,0));
+        m_GhostCornerPositions.Add(Ghosts.GhostTypes.Cylde, new Vector2Int(16,12));
     }
 }

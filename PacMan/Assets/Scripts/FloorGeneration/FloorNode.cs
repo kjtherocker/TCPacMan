@@ -32,6 +32,7 @@ public class FloorNode : MonoBehaviour
     public Grid m_Grid;
     
     private NodeInfo m_NodeInfo;
+    public List<FloorNode> Testneightbors;
     
     public List<Floor.FloorDirections> m_WalkableDirections;
     public List<Floor.FloorDirections> m_InteractableDirections;
@@ -54,6 +55,7 @@ public class FloorNode : MonoBehaviour
     {
         m_NodeInfo = new NodeInfo();
         m_NodeInfo.m_Neighbours = GetNeighbours(GameManager.instance.m_FloorManager);
+        Testneightbors = m_NodeInfo.m_Neighbours;
         m_NodeInfo.m_PositionInGrid = m_PositionInGrid; 
         return m_NodeInfo;
     }

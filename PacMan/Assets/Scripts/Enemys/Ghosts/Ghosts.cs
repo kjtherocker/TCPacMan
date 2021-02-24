@@ -24,20 +24,25 @@ public class Ghosts : MonoBehaviour
 
     protected Dictionary<GhostStates, Behaviour> m_GhostBehaviours;
 
-    protected Behaviour CurrentBehaviour;
+    protected Behaviour m_CurrentBehaviour;
 
     public FloorNode m_CurrentNode;
     public GhostTypes m_GhostType;
 
-    private PlayerController m_Pacman;
+    public PlayerController m_Pacman;
 
     private List<NodeInfo> m_OpenList;
+    public List<FloorNode> m_PathToFollow;
     private NodeInfo[] m_FloorCopy;
+    public Vector2Int m_CornerPosition;
+
+    
     public virtual void Initialize()
     {
         m_GhostBehaviours = new Dictionary<GhostStates, Behaviour>();
-        m_OpenList = new List<NodeInfo>();
         m_FloorCopy = new NodeInfo[20*20];
+        m_PathToFollow = new List<FloorNode>();
+        m_OpenList = new List<NodeInfo>();
     }
 
     public void CopyFloor(NodeInfo[] aFloorCopy)
@@ -55,8 +60,7 @@ public class Ghosts : MonoBehaviour
             m_FloorCopy[i].m_PositionInGrid = aFloorCopy[i].m_PositionInGrid;
             m_FloorCopy[i].m_Neighbours = aFloorCopy[i].m_Neighbours;
         }
-
-        StartCoroutine(FollowPath(CalculatePath(m_Pacman.m_CurrentNode.m_PositionInGrid)));
+        
     }
 
 
@@ -71,12 +75,39 @@ public class Ghosts : MonoBehaviour
             
             m_FloorCopy[i].m_IsGoal = false;
             m_FloorCopy[i].m_MovementCost = -1;
+            m_FloorCopy[i].m_HeuristicCalculated = false;
         }
+
+        for (int i = 0; i < m_OpenList.Count; i++)
+        {
+            m_OpenList.RemoveAt(0);
+        }
+        
+        for (int i = 0; i < m_PathToFollow.Count; i++)
+        {
+            m_PathToFollow.RemoveAt(0);
+        }
+
     }
 
+
+    public void SetCornerPosition(Vector2Int aCornerPosition)
+    {
+        m_CornerPosition = aCornerPosition;
+    }
+
+    public void ProcessBehaviour(IEnumerator aCoroutine)
+    {
+        StartCoroutine(aCoroutine);
+    }
+
+    
     public List<FloorNode> CalculatePath( Vector2Int aStart)
     {
         ResetFloorArray();
+        
+        m_PathToFollow = new List<FloorNode>();
+        m_OpenList = new List<NodeInfo>();
         
         //Calculating path Heuristic
         int Spawnindex = GameManager.instance.m_FloorManager.m_FloorCore.GetIndex(aStart.x, aStart.y);
@@ -95,6 +126,7 @@ public class Ghosts : MonoBehaviour
             if (m_OpenList.Count <= 0)
             {
                 isCalculatingHeuristic = false;
+                break;
             }
             
             NodeInfo openNodeInfo = m_OpenList[0];
@@ -102,6 +134,7 @@ public class Ghosts : MonoBehaviour
             if (openNodeInfo.m_PositionInGrid == m_CurrentNode.m_PositionInGrid)
             {
                 isCalculatingHeuristic = false;
+                break;
             }
             
             AddNeighborsHeuristic(openNodeInfo.m_PositionInGrid);
@@ -110,7 +143,7 @@ public class Ghosts : MonoBehaviour
 
         
         //Calculating the quckest path to goal
-        List<FloorNode> m_PathToFollow = new List<FloorNode>();
+    
 
         FloorNode GetFloornode = GameManager.instance.m_FloorManager.GetNode(m_CurrentNode.m_PositionInGrid);
 
@@ -127,21 +160,7 @@ public class Ghosts : MonoBehaviour
         return m_PathToFollow;
     }
 
-    IEnumerator FollowPath(List<FloorNode> aPath)
-    {
-        if (aPath.Count <= 0)
-        {
-            yield break;
-        }
-
-        gameObject.transform.position = aPath[0].transform.position + new Vector3(0,2,0);
-        m_CurrentNode = aPath[0];
-        aPath.RemoveAt(0);
-
-        
-        yield return new WaitForSeconds(0.5f);
-        StartCoroutine(FollowPath(aPath));
-    }
+    
 
 
     public FloorNode CheckNeighborsForLowestNumber(NodeInfo aNodeInfo)
@@ -177,10 +196,6 @@ public class Ghosts : MonoBehaviour
         return TempNode;
     }
     
-    public void GetLowestHeuristic()
-    {
-        
-    }
 
     public void AddNeighborsHeuristic(Vector2Int aPosition)
     {
@@ -226,7 +241,13 @@ public class Ghosts : MonoBehaviour
 
     public virtual void SetGhostBehaviour(GhostStates aGhostState)
     {
-        CurrentBehaviour = m_GhostBehaviours[aGhostState];
+        m_CurrentBehaviour = m_GhostBehaviours[aGhostState];
+        
+    }
+
+    public void ActivateGhostBehaviour()
+    {
+        m_CurrentBehaviour.StartMoving();
     }
 
 

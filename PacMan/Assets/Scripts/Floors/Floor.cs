@@ -35,7 +35,11 @@ public class Floor : MonoBehaviour
     public short[] m_GoalsBlueprint;
 
 
+    //To open up the ghost door so that ghosts can pathfind through it
+    public Dictionary<Vector2Int, Vector2Int> m_GhostDoorOffset;
+    
     public Dictionary<Ghosts.GhostTypes, Vector2Int> m_GhostSpawnPositions;
+    public Dictionary<Ghosts.GhostTypes, Vector2Int> m_GhostCornerPositions;
     public Vector2Int m_DefaultSpawnPosition;
 
     // Start is called before the first frame update
@@ -110,6 +114,13 @@ public class Floor : MonoBehaviour
     public void SpawnCamera()
     {
         m_DefaultSpawnPosition = new Vector2Int(0,1);
+    }
+
+    public void GhostDoorOffset()
+    { 
+        List<Vector2Int> m_Neightbors;
+        
+        m_GhostDoorOffset.Add(new Vector2Int(6,6), new Vector2Int(7,6) );
     }
 
     public virtual void SpawnGhosts()

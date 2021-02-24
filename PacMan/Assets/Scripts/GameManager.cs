@@ -17,12 +17,19 @@ public class GameManager : Singleton<GameManager>
     public FloorManager m_FloorManager;
     public PlayerController m_Pacman;
     private Ghosts[] m_Ghosts;
+    private List<Ghosts> m_GhostsToActivate;
     public void Start()
     {
         m_FloorManager = GetComponentInChildren<FloorManager>();
         m_Pacman = GetComponentInChildren<PlayerController>();
         m_Ghosts = GetComponentsInChildren<Ghosts>();
-        
+
+        m_GhostsToActivate = new List<Ghosts>();
+        for (int i = 0; i < m_Ghosts.Length; i++)
+        {
+            m_GhostsToActivate.Add(m_Ghosts[i]);
+        }
+
         m_FloorManager.Start();
         m_FloorManager.SpawnNodeInfo();
         //Initializing the ghosts 
@@ -47,7 +54,7 @@ public class GameManager : Singleton<GameManager>
 
     public void StartPacman()
     {
-        m_Lives = 3;
+        m_Lives = 100;
         m_Score = 0;
 
         m_TextScore.text = m_Score.ToString();
@@ -68,9 +75,26 @@ public class GameManager : Singleton<GameManager>
         m_TextGetReady.gameObject.SetActive(true);
         
         yield return new WaitForSeconds(2.0f);
-        
+
+        m_GhostsToActivate[0].ActivateGhostBehaviour();
+        m_GhostsToActivate.RemoveAt(0);
         m_TextGetReady.gameObject.SetActive(false);
         m_Pacman.SetPacManState(PlayerController.PacmanStates.Normal);
+        StartCoroutine(StartMovingGhosts());
+    }
+
+    public IEnumerator StartMovingGhosts()
+    {
+        if (m_GhostsToActivate.Count <= 0)
+        {
+            yield break;
+        }
+
+        yield return new WaitForSeconds(8.0f);
+        m_GhostsToActivate[0].ActivateGhostBehaviour();
+        m_GhostsToActivate.RemoveAt(0);
+
+        StartCoroutine(StartMovingGhosts());
     }
 
     public void ChangeScore(int aScore)

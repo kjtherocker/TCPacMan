@@ -84,6 +84,7 @@ public class FloorManager : MonoBehaviour
 
             FloorNode tempFloorNode = GetNode(m_FloorCore.m_GhostSpawnPositions[aGhosts[i].m_GhostType]);
             aGhosts[i].SetCurrentFloorNode(tempFloorNode);
+            aGhosts[i].SetCornerPosition(m_FloorCore.m_GhostCornerPositions[aGhosts[i].m_GhostType]);
         }
     }
 

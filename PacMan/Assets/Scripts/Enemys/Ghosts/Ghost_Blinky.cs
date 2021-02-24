@@ -19,11 +19,12 @@ public class Ghost_Blinky : Ghosts
         foreach (var behaviour in m_GhostBehaviours)
         {
             behaviour.Value.SetGhost(this);
+            behaviour.Value.Initialize();
         }
 
         m_GhostType = GhostTypes.Blinky;
         
-        SetGhostBehaviour(GhostStates.GhostUnique);
+        SetGhostBehaviour(GhostStates.Corner);
     }
 
     public void Update()
