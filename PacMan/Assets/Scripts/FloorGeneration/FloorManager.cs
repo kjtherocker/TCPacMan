@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using UnityEngine.Assertions.Must;
 using static UnityEditor.PrefabUtility;
+using Random = UnityEngine.Random;
 
 [ExecuteInEditMode]
 [System.Serializable]
@@ -258,15 +259,44 @@ public class FloorManager : MonoBehaviour
         
         return m_FloorNodes[FinalIndex] ;
     }
-    
+
+    public FloorNode GetRandomNode()
+    {
+        int row = Random.Range(0, m_FloorCore.m_GridDimensionX);
+        int column = Random.Range(0, m_FloorCore.m_GridDimensionY);
+
+        FloorNode randomNode = m_FloorNodes[m_FloorCore.GetIndex(row, column)];
+
+        while (randomNode == null)
+        {
+            row = Random.Range(0, m_FloorCore.m_GridDimensionX);
+            column = Random.Range(0, m_FloorCore.m_GridDimensionY);
+            randomNode = m_FloorNodes[m_FloorCore.GetIndex(row, column)];
+        }
+
+
+        return randomNode ;
+    }
+
     public FloorNode GetNode(int aRow, int aColumn)
     {
-        return m_FloorNodes[m_FloorCore.GetIndex( aRow,aColumn)] ;
+        if (aRow > m_FloorCore.m_GridDimensionX || aColumn > m_FloorCore.m_GridDimensionY)
+        {
+            return m_FloorNodes[m_FloorCore.GetIndex(aRow, aColumn)];
+        }
+
+        return null;
     }
     
     public FloorNode GetNode(Vector2Int aPosition)
     {
-        return m_FloorNodes[m_FloorCore.GetIndex( aPosition.x,aPosition.y)] ;
+        if (aPosition.x > m_FloorCore.m_GridDimensionX || aPosition.y > m_FloorCore.m_GridDimensionY ||
+            aPosition.x < 0 || aPosition.y < 0)
+        {
+            return null;
+        }
+
+        return m_FloorNodes[m_FloorCore.GetIndex(aPosition.x, aPosition.y)];
     }
     
 

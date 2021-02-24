@@ -17,6 +17,8 @@ public class Ghost_Blinky : Ghosts
         m_GhostBehaviours.Add(GhostStates.GhostUnique, new Behaviour_Blinky());
         m_GhostBehaviours.Add(GhostStates.Agression, new Behaviour_Aggression());
         m_GhostBehaviours.Add(GhostStates.Corner, new Behaviour_Corner());
+        m_GhostBehaviours.Add(GhostStates.Eatable, new Behaviour_Eatable());
+        m_GhostBehaviours.Add(GhostStates.Death, new Behaviour_ReturnToSpawn());
         
         foreach (var behaviour in m_GhostBehaviours)
         {

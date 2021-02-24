@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Behaviour_Eatable : Behaviour
+public class Behaviour_ReturnToSpawn : Behaviour
 {
     public override void Initialize()
     {
-        m_GhostSpeed = 2.5f;
+        m_GhostSpeed = 15.5f;
         m_TimerEnd = 10;
-        m_GhostMaterial = Resources.Load<Material>("Ghost/Material_EatableGhost");
+        m_GhostMaterial = Resources.Load<Material>("Ghost/Material_GhostEyes");
     }
     
     public override void ActivateBehaviour()
     {
-        m_GoalPosition = m_Ghost.m_CornerPosition;
-        m_CurrentTimer = 0;
+        m_GoalPosition = m_Ghost.m_SpawnNode.m_PositionInGrid;
         m_Paths = m_Ghost.CalculatePath(m_GoalPosition);
         m_Ghost.SetGhostMaterial(m_GhostMaterial);
 
@@ -22,19 +21,9 @@ public class Behaviour_Eatable : Behaviour
     }
     public override void UpdateBehaviour()
     {
-        m_CurrentTimer += Time.deltaTime;
-
-        if (m_CurrentTimer >= m_TimerEnd)
+        if (m_Paths[0] != null && m_Paths.Count > 0)
         {
-            m_Ghost.SetGhostBehaviour(Ghosts.GhostStates.GhostUnique,true);
-        }
-        
-        if (m_Paths.Count > 0)
-        {
-            if (m_Paths[0] != null)
-            {
-                DirectMovement(m_Ghost.gameObject.transform, m_Paths[0], m_GhostSpeed);
-            }
+            DirectMovement(m_Ghost.gameObject.transform, m_Paths[0], m_GhostSpeed);
         }
     }
 
@@ -51,8 +40,6 @@ public class Behaviour_Eatable : Behaviour
 
     public override void PacmanContact()
     {
-        m_Ghost.SetGhostBehaviour(Ghosts.GhostStates.Death,true);
+        
     }
-
-
 }

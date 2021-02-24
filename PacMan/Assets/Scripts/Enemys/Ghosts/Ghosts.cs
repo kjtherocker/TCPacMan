@@ -11,7 +11,8 @@ public class Ghosts : MonoBehaviour
         Agression,
         Corner,
         Standby,
-        Eatable
+        Eatable,
+        Death
         
     }
 
@@ -143,13 +144,12 @@ public class Ghosts : MonoBehaviour
 
         m_OpenList.Add(m_FloorCopy[Spawnindex]);
 
-        bool isCalculatingHeuristic = true;
+     
         
-        while (isCalculatingHeuristic)
+        while (true)
         {
             if (m_OpenList.Count <= 0)
             {
-                isCalculatingHeuristic = false;
                 break;
             }
             
@@ -157,7 +157,6 @@ public class Ghosts : MonoBehaviour
 
             if (openNodeInfo.m_PositionInGrid == m_CurrentNode.m_PositionInGrid)
             {
-                isCalculatingHeuristic = false;
                 break;
             }
             

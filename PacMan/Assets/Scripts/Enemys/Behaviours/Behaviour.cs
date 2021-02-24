@@ -87,7 +87,7 @@ public class Behaviour
  
         
 
-        if (Vector3.Distance(aObject.transform.position, NewNodePosition) < 0.5f)
+        if (Vector3.Distance(aObject.transform.position, NewNodePosition) < 0.25f)
         {
             m_Ghost.m_CurrentNode = aTargetNode;
             NextMove();    

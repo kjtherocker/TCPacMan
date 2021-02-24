@@ -119,5 +119,26 @@ public class GameManager : Singleton<GameManager>
         StartCoroutine(StartDelay());
     }
 
+    public Ghosts GetGhost(Ghosts.GhostTypes aGhostTypes)
+    {
+        for (int i = 0; i < m_Ghosts.Length - 1; i++)
+        {
+            if (m_Ghosts[i].m_GhostType == aGhostTypes)
+            {
+                return m_Ghosts[i];
+            }
+        }
+
+        return null;
+    }
+
+    public void MakeGhostsEatable()
+    {
+        for (int i = 0; i < m_Ghosts.Length; i++)
+        {
+            m_Ghosts[i].SetGhostBehaviour(Ghosts.GhostStates.Eatable,true);
+        }
+    }
+
 
 }

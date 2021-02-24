@@ -140,20 +140,7 @@ public class PlayerController : MonoBehaviour
       //  transform.rotation = rotation;
     }
 
-
-    public void MovementConstantTest()
-    {
-
-        if (m_CurrentNode.IsDirectionWalkable(m_NextDirection))
-        {
-            MovetoNode(m_NextDirection);
-
-            return;
-        }
-
-        MovetoNode(m_CurrentDirection);
-    }
-
+    
 
 
 

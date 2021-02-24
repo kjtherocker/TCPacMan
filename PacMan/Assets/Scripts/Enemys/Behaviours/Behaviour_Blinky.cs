@@ -31,10 +31,13 @@ public class Behaviour_Blinky : Behaviour
         {
             m_Ghost.SetGhostBehaviour(Ghosts.GhostStates.Corner,true);
         }
-        
-        if (m_Paths[0] != null && m_Paths.Count > 0)
+
+        if (m_Paths.Count > 0)
         {
-            DirectMovement(m_Ghost.gameObject.transform, m_Paths[0], m_GhostSpeed);
+            if (m_Paths[0] != null)
+            {
+                DirectMovement(m_Ghost.gameObject.transform, m_Paths[0], m_GhostSpeed);
+            }
         }
     }
     
