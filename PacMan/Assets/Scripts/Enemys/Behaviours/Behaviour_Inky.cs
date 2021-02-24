@@ -8,8 +8,10 @@ public class Behaviour_Inky : Behaviour
     
 
     private Ghosts m_Blinky;
-    public override void Initialize()
+    public override void Initialize(Ghosts aGhost , PlayerController aPacman, FloorManager aFloorManager)
     {
+        base.Initialize(aGhost,aPacman,aFloorManager);
+        
         m_CalculationRefreshRate = 1;
         m_GhostSpeed = 10.5f;
         m_GoalPosition = m_Ghost.m_Pacman.m_CurrentPosition;
@@ -22,8 +24,10 @@ public class Behaviour_Inky : Behaviour
         
         Vector2Int Difference = m_Blinky.m_CurrentNode.m_PositionInGrid - m_Ghost.m_Pacman.m_CurrentNode.m_PositionInGrid;
 
-        if (GameManager.instance.m_FloorManager.GetNode(m_Ghost.m_Pacman.m_CurrentNode.m_PositionInGrid + Difference * 2)
-            == null)
+
+        FloorNode currentNodeDifference = m_FloorManager.GetNode(m_Pacman.m_CurrentPosition + Difference * 2);
+        
+        if (currentNodeDifference == null)
         {
             return m_Ghost.m_Pacman.m_CurrentNode.m_PositionInGrid;
         }
@@ -36,9 +40,11 @@ public class Behaviour_Inky : Behaviour
     public override void ActivateBehaviour()
     {
         m_Blinky = GameManager.instance.GetGhost(Ghosts.GhostTypes.Blinky);
+        
         m_GoalPosition = CalculateBlinkyDistanceFromPacman();
         m_Paths = m_Ghost.CalculatePath(m_GoalPosition);
         m_Ghost.SetGhostMaterial(m_Ghost.m_DefaultGhostMaterial);
+        
         m_CurrentTimer = 0;
         NextMove();
     }
@@ -73,7 +79,6 @@ public class Behaviour_Inky : Behaviour
         if (m_CurrentRefeshPosition >= m_CalculationRefreshRate)
         {
             m_GoalPosition = CalculateBlinkyDistanceFromPacman();
-            Debug.Log(m_GoalPosition);
             m_Paths = m_Ghost.CalculatePath(m_GoalPosition);
             m_CurrentRefeshPosition = 0;
         }

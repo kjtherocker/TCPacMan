@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class Behaviour_Eatable : Behaviour
 {
-    public override void Initialize()
+    public override void Initialize(Ghosts aGhost , PlayerController aPacman, FloorManager aFloorManager)
     {
+        base.Initialize(aGhost,aPacman,aFloorManager);
+
         m_GhostSpeed = 2.5f;
         m_TimerEnd = 10;
         m_GhostMaterial = Resources.Load<Material>("Ghost/Material_EatableGhost");

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Ghost_Clyde : Ghosts
 {
-    public override void Initialize()
+    public override void Initialize(PlayerController aPacman, FloorManager aFloorManager)
     {
-        base.Initialize();
+        base.Initialize(aPacman ,aFloorManager );
         m_GhostBehaviours.Add(GhostStates.Standby, new Behaviour_StandBy());
         m_GhostBehaviours.Add(GhostStates.GhostUnique, new  Behaviour_Blinky());
         m_GhostBehaviours.Add(GhostStates.Agression, new Behaviour_Blinky());
@@ -16,8 +16,7 @@ public class Ghost_Clyde : Ghosts
         
         foreach (var behaviour in m_GhostBehaviours)
         {
-            behaviour.Value.SetGhost(this);
-            behaviour.Value.Initialize();
+            behaviour.Value.Initialize(this, m_Pacman , m_FloorManager);
         }
 
         m_DefaultGhostMaterial = Resources.Load<Material>("Ghost/Material_Clyde");

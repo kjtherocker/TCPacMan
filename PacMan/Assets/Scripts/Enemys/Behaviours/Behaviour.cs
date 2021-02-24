@@ -18,21 +18,23 @@ public class Behaviour
     protected float m_CurrentTimer;
 
     protected Material m_GhostMaterial;
+
+    protected PlayerController m_Pacman;
+    protected FloorManager m_FloorManager;
     
-    public virtual void Initialize()
+    
+    public virtual void Initialize(Ghosts aGhost , PlayerController aPacman , FloorManager aFloorManager)
     {
-        
+        m_Ghost = aGhost;
+        m_Pacman = aPacman;
+        m_FloorManager = aFloorManager;
     }
 
     public void SetTimer(float aTimer)
     {
         m_TimerEnd = aTimer;
     }
-
-    public void SetGhost(Ghosts aGhost)
-    {
-        m_Ghost = aGhost;
-    }
+    
 
     public virtual void ActivateBehaviour()
     {

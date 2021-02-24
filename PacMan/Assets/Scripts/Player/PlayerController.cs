@@ -111,9 +111,14 @@ public class PlayerController : MonoBehaviour
     public void ReturnToSpawn()
     {
         transform.position = m_SpawnPosition;
-        m_CurrentNode = m_StartNode;
+        SetCurrentNode(m_StartNode);
     }
-    
+
+    public void SetCurrentNode(FloorNode aFloorNode)
+    {
+        m_CurrentNode = aFloorNode;
+        m_CurrentPosition = aFloorNode.m_PositionInGrid;
+    }
 
 
     public  void DirectMovement(Transform aObject, FloorNode  aTargetNode, float aTimeUntilDone)
@@ -127,8 +132,7 @@ public class PlayerController : MonoBehaviour
 
         if (Vector3.Distance(aObject.transform.position, NewNodePosition) < m_MiniumDistanceBetweenNodes)
         {
-            m_CurrentNode = aTargetNode;
-            
+            SetCurrentNode(aTargetNode);
             return;
         }
         

@@ -43,13 +43,18 @@ public class Ghosts : MonoBehaviour
 
     public Material m_DefaultGhostMaterial;
     private Renderer m_GhostRenderer;
+
+    public FloorManager m_FloorManager;
     
-    public virtual void Initialize()
+    public virtual void Initialize(PlayerController aPacman, FloorManager aFloorManager)
     {
         m_GhostBehaviours = new Dictionary<GhostStates, Behaviour>();
         m_FloorCopy = new NodeInfo[20*20];
         m_PathToFollow = new List<FloorNode>();
         m_OpenList = new List<NodeInfo>();
+
+        m_FloorManager = aFloorManager;
+        m_Pacman = aPacman;
 
         m_GhostRenderer = GetComponent<Renderer>();
 
@@ -135,7 +140,7 @@ public class Ghosts : MonoBehaviour
         m_OpenList = new List<NodeInfo>();
         
         //Calculating path Heuristic
-        int Spawnindex = GameManager.instance.m_FloorManager.m_FloorCore.GetIndex(aStart.x, aStart.y);
+        int Spawnindex = m_FloorManager.m_FloorCore.GetIndex(aStart.x, aStart.y);
         int m_CostSoFar = 0;
         
         m_FloorCopy[Spawnindex].m_IsGoal = true;
@@ -168,9 +173,9 @@ public class Ghosts : MonoBehaviour
         //Calculating the quckest path to goal
     
 
-        FloorNode GetFloornode = GameManager.instance.m_FloorManager.GetNode(m_CurrentNode.m_PositionInGrid);
+        FloorNode GetFloornode = m_FloorManager.GetNode(m_CurrentNode.m_PositionInGrid);
 
-        int currentindex = GameManager.instance.m_FloorManager.m_FloorCore.GetIndex( m_CurrentNode.m_PositionInGrid);
+        int currentindex = m_FloorManager.m_FloorCore.GetIndex( m_CurrentNode.m_PositionInGrid);
         
         m_PathToFollow.Add(GetFloornode);
 
@@ -195,7 +200,7 @@ public class Ghosts : MonoBehaviour
         foreach (FloorNode floorNode in aNodeInfo.m_Neighbours)
         {
 
-                int pathiIndex = GameManager.instance.m_FloorManager.m_FloorCore.GetIndex(floorNode.m_PositionInGrid);
+                int pathiIndex = m_FloorManager.m_FloorCore.GetIndex(floorNode.m_PositionInGrid);
                 if (floorNode == null)
                 {
                     Debug.Log("neighbour  doesnt exist");
@@ -228,11 +233,11 @@ public class Ghosts : MonoBehaviour
         }
         
         
-        int Spawnindex = GameManager.instance.m_FloorManager.m_FloorCore.GetIndex(aPosition.x, aPosition.y);
+        int Spawnindex = m_FloorManager.m_FloorCore.GetIndex(aPosition.x, aPosition.y);
         
          foreach (FloorNode floorNode in m_FloorCopy[Spawnindex].m_Neighbours)
          {
-             int newindex = GameManager.instance.m_FloorManager.m_FloorCore.GetIndex(floorNode.m_PositionInGrid.x,
+             int newindex = m_FloorManager.m_FloorCore.GetIndex(floorNode.m_PositionInGrid.x,
                  floorNode.m_PositionInGrid.y);
              if (m_FloorCopy[newindex].m_HeuristicCalculated)
              {
@@ -247,14 +252,7 @@ public class Ghosts : MonoBehaviour
              
          }
     }
-
-
-    public void SetPacman(PlayerController aPlayerController)
-    {
-        m_Pacman = aPlayerController;
-
-    }
-
+    
     public virtual void SetCurrentFloorNode( FloorNode aFloorNode)
     {
         m_CurrentNode = aFloorNode;

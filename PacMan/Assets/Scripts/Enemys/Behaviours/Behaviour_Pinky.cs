@@ -7,8 +7,10 @@ public class Behaviour_Pinky : Behaviour
     // Start is called before the first frame update
 
     private int m_DistanceFromPacman = 4;
-    public override void Initialize()
+    public override void Initialize(Ghosts aGhost , PlayerController aPacman, FloorManager aFloorManager)
     {
+        base.Initialize(aGhost,aPacman,aFloorManager);
+
         m_CalculationRefreshRate = 1;
         m_GhostSpeed = 10.5f;
         m_GoalPosition = m_Ghost.m_Pacman.m_CurrentPosition;
@@ -25,8 +27,6 @@ public class Behaviour_Pinky : Behaviour
         nodeAheadOfPacman.Add(m_Ghost.m_Pacman.m_CurrentNode);
 
         bool loopFloornodes = true;
-
-
         
          while (true)
          {
@@ -42,8 +42,7 @@ public class Behaviour_Pinky : Behaviour
              }
 
 
-             FloorNode floorNode =
-                 GameManager.instance.m_FloorManager.GetNode(m_Ghost.m_Pacman.m_CurrentPosition, pacmanDirection);
+             FloorNode floorNode = m_FloorManager.GetNode(m_Ghost.m_Pacman.m_CurrentPosition, pacmanDirection);
              nodeAheadOfPacman.Add(floorNode);
 
              if (nodeAheadOfPacman.Count > m_DistanceFromPacman)
@@ -60,7 +59,7 @@ public class Behaviour_Pinky : Behaviour
         }
         else
         {
-            return m_Ghost.m_Pacman.m_CurrentNode.m_PositionInGrid;
+            return m_Pacman.m_CurrentPosition;
         }
     }
 

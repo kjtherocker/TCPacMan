@@ -208,7 +208,7 @@ public class FloorManager : MonoBehaviour
             case (short)FloorGimmicks.Pellet:
                 gimmickToSpawn = Instantiate(m_Pellet,m_Gimmicks.transform);
                 gimmickToSpawn.transform.position = aFloornode.transform.position + nodeOffset;
-            //    m_PelletPool.Add(gimmickToSpawn);
+                m_PelletPool.Add(gimmickToSpawn);
                 
                 break;
             

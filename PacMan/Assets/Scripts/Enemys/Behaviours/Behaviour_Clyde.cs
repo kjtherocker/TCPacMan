@@ -9,8 +9,10 @@ public class Behaviour_Clyde : Behaviour
     private int m_DistanceFromPacman = 4;
     private float m_FearTimer = 2;
     private float m_CurrentFearTimer;
-    public override void Initialize()
+    public override void Initialize(Ghosts aGhost , PlayerController aPacman, FloorManager aFloorManager)
     {
+        base.Initialize(aGhost,aPacman,aFloorManager);
+
 
         m_GhostSpeed = 10.5f;
         m_GoalPosition = m_Ghost.m_Pacman.m_CurrentPosition;
@@ -45,7 +47,7 @@ public class Behaviour_Clyde : Behaviour
 
         if (m_CurrentFearTimer >= m_FearTimer)
         {
-            if (Vector3.Distance(m_Ghost.gameObject.transform.position, m_Ghost.m_Pacman.transform.position) < 15.0f)
+            if (Vector3.Distance(m_Ghost.gameObject.transform.position, m_Pacman.transform.position) < 15.0f)
             {
                 Debug.Log("RUN AWAY");
                 m_GoalPosition = RandomNode();

@@ -6281,6 +6281,7 @@ MonoBehaviour:
   m_PathToFollow: []
   m_CornerPosition: {x: 0, y: 0}
   m_DefaultGhostMaterial: {fileID: 0}
+  m_FloorManager: {fileID: 0}
 --- !u!1 &188407950
 GameObject:
   m_ObjectHideFlags: 0
@@ -27401,6 +27402,7 @@ MonoBehaviour:
   m_PathToFollow: []
   m_CornerPosition: {x: 0, y: 0}
   m_DefaultGhostMaterial: {fileID: 0}
+  m_FloorManager: {fileID: 0}
 --- !u!136 &722621694
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -34846,6 +34848,7 @@ MonoBehaviour:
   m_PathToFollow: []
   m_CornerPosition: {x: 0, y: 0}
   m_DefaultGhostMaterial: {fileID: 0}
+  m_FloorManager: {fileID: 0}
 --- !u!136 &893948435
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -72409,6 +72412,7 @@ MonoBehaviour:
   m_PathToFollow: []
   m_CornerPosition: {x: 0, y: 0}
   m_DefaultGhostMaterial: {fileID: 0}
+  m_FloorManager: {fileID: 0}
 --- !u!136 &1817789121
 CapsuleCollider:
   m_ObjectHideFlags: 0

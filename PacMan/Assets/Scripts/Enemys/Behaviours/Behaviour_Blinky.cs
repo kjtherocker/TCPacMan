@@ -6,17 +6,19 @@ using UnityEngine;
 public class Behaviour_Blinky : Behaviour
 {
     // Start is called before the first frame update
-    public override void Initialize()
+    public override void Initialize(Ghosts aGhost , PlayerController aPacman, FloorManager aFloorManager)
     {
+        base.Initialize(aGhost,aPacman,aFloorManager);
+
         m_CalculationRefreshRate = 2;
         m_GhostSpeed = 10.5f;
-        m_GoalPosition = m_Ghost.m_Pacman.m_CurrentPosition;
+        m_GoalPosition = m_Pacman.m_CurrentPosition;
         m_TimerEnd = 10;
     }
     
     public override void ActivateBehaviour()
     {
-        m_GoalPosition = m_Ghost.m_Pacman.m_CurrentNode.m_PositionInGrid;
+        m_GoalPosition = m_Pacman.m_CurrentPosition;
         m_Paths = m_Ghost.CalculatePath(m_GoalPosition);
         m_Ghost.SetGhostMaterial(m_Ghost.m_DefaultGhostMaterial);
         m_CurrentTimer = 0;
@@ -52,7 +54,7 @@ public class Behaviour_Blinky : Behaviour
 
         if (m_CurrentRefeshPosition >= m_CalculationRefreshRate)
         {
-            m_GoalPosition = m_Ghost.m_Pacman.m_CurrentNode.m_PositionInGrid;
+            m_GoalPosition = m_Pacman.m_CurrentPosition;
             m_Paths = m_Ghost.CalculatePath(m_GoalPosition);
             m_CurrentRefeshPosition = 0;
         }

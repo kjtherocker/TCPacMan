@@ -38,9 +38,7 @@ public class GameManager : Singleton<GameManager>
         //Initializing the ghosts 
         for (int i = 0; i < m_Ghosts.Length; i++)
         {
-            m_Ghosts[i].SetPacman(m_Pacman);
-            m_Ghosts[i].Initialize();
-
+            m_Ghosts[i].Initialize(m_Pacman , m_FloorManager);
         }
 
         m_FloorManager.SpawnGhosts(m_Ghosts);

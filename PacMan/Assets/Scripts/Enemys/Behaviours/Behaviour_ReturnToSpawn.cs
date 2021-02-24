@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class Behaviour_ReturnToSpawn : Behaviour
 {
-    public override void Initialize()
+    public override void Initialize(Ghosts aGhost , PlayerController aPacman, FloorManager aFloorManager)
     {
+        base.Initialize(aGhost,aPacman,aFloorManager);
+
         m_GhostSpeed = 15.5f;
         m_TimerEnd = 10;
         m_GhostMaterial = Resources.Load<Material>("Ghost/Material_GhostEyes");
