@@ -18,6 +18,9 @@ public class GameManager : Singleton<GameManager>
     public PlayerController m_Pacman;
     private Ghosts[] m_Ghosts;
     private List<Ghosts> m_GhostsToActivate;
+    
+    private float m_GhostMoveDelay = 2;
+    
     public void Start()
     {
         m_FloorManager = GetComponentInChildren<FloorManager>();
@@ -44,7 +47,9 @@ public class GameManager : Singleton<GameManager>
         
         for (int i = 0; i < m_Ghosts.Length; i++)
         {
+            float timeMultiplyer = i + 1;
             m_Ghosts[i].CopyFloor(m_FloorManager.m_NodeInfoArray);
+            m_Ghosts[i].GetGhostBehaviour(Ghosts.GhostStates.Standby).SetTimer(m_GhostMoveDelay * timeMultiplyer);
         }
         
         StartPacman();
@@ -54,7 +59,7 @@ public class GameManager : Singleton<GameManager>
 
     public void StartPacman()
     {
-        m_Lives = 100;
+        m_Lives = 3;
         m_Score = 0;
 
         m_TextScore.text = m_Score.ToString();
@@ -62,9 +67,13 @@ public class GameManager : Singleton<GameManager>
 
         m_FloorManager.GenerateGimmicks();
         m_FloorManager.m_PacMan = m_Pacman;
+        
         m_Pacman.SetPacManState(PlayerController.PacmanStates.Start);
         m_Pacman.ReturnToSpawn();
+        
         StartCoroutine(StartDelay());
+        
+        
         m_TextGetReady.gameObject.SetActive(true);
 
     }
@@ -74,28 +83,19 @@ public class GameManager : Singleton<GameManager>
         m_Pacman.SetPacManState(PlayerController.PacmanStates.Start);
         m_TextGetReady.gameObject.SetActive(true);
         
+        for (int i = 0; i < m_Ghosts.Length; i++)
+        {
+            m_Ghosts[i].SetGhostBehaviour(Ghosts.GhostStates.Standby,true);
+        }
+        
         yield return new WaitForSeconds(2.0f);
 
-        m_GhostsToActivate[0].ActivateGhostBehaviour();
-        m_GhostsToActivate.RemoveAt(0);
+
         m_TextGetReady.gameObject.SetActive(false);
         m_Pacman.SetPacManState(PlayerController.PacmanStates.Normal);
-        StartCoroutine(StartMovingGhosts());
+
     }
 
-    public IEnumerator StartMovingGhosts()
-    {
-        if (m_GhostsToActivate.Count <= 0)
-        {
-            yield break;
-        }
-
-        yield return new WaitForSeconds(8.0f);
-        m_GhostsToActivate[0].ActivateGhostBehaviour();
-        m_GhostsToActivate.RemoveAt(0);
-
-        StartCoroutine(StartMovingGhosts());
-    }
 
     public void ChangeScore(int aScore)
     {

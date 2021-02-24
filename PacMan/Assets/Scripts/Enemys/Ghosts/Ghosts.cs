@@ -10,6 +10,8 @@ public class Ghosts : MonoBehaviour
         GhostUnique,
         Agression,
         Corner,
+        Standby,
+        Eatable
         
     }
 
@@ -25,8 +27,10 @@ public class Ghosts : MonoBehaviour
     protected Dictionary<GhostStates, Behaviour> m_GhostBehaviours;
 
     protected Behaviour m_CurrentBehaviour;
+    protected Behaviour m_PreviousBehaviour;
 
     public FloorNode m_CurrentNode;
+    public FloorNode m_SpawnNode;
     public GhostTypes m_GhostType;
 
     public PlayerController m_Pacman;
@@ -36,6 +40,8 @@ public class Ghosts : MonoBehaviour
     private NodeInfo[] m_FloorCopy;
     public Vector2Int m_CornerPosition;
 
+    public Material m_DefaultGhostMaterial;
+    private Renderer m_GhostRenderer;
     
     public virtual void Initialize()
     {
@@ -43,6 +49,9 @@ public class Ghosts : MonoBehaviour
         m_FloorCopy = new NodeInfo[20*20];
         m_PathToFollow = new List<FloorNode>();
         m_OpenList = new List<NodeInfo>();
+
+        m_GhostRenderer = GetComponent<Renderer>();
+
     }
 
     public void CopyFloor(NodeInfo[] aFloorCopy)
@@ -91,17 +100,32 @@ public class Ghosts : MonoBehaviour
     }
 
 
+    public void Update()
+    {
+        if (m_CurrentBehaviour != null)
+        {
+            m_CurrentBehaviour.UpdateBehaviour();
+        }
+    }
+
+    public void SetGhostMaterial(Material aNewMaterial)
+    {
+        if (m_GhostRenderer.materials[0] == aNewMaterial)
+        {
+            return;
+        }
+
+        Material[] ghostmaterials =  m_GhostRenderer.materials;
+        ghostmaterials[0] = aNewMaterial;
+        
+        m_GhostRenderer.materials = ghostmaterials;
+    }
+
     public void SetCornerPosition(Vector2Int aCornerPosition)
     {
         m_CornerPosition = aCornerPosition;
     }
 
-    public void ProcessBehaviour(IEnumerator aCoroutine)
-    {
-        StartCoroutine(aCoroutine);
-    }
-
-    
     public List<FloorNode> CalculatePath( Vector2Int aStart)
     {
         ResetFloorArray();
@@ -239,22 +263,34 @@ public class Ghosts : MonoBehaviour
             m_CurrentNode.transform.position + new Vector3(0,2,0);
     }
 
-    public virtual void SetGhostBehaviour(GhostStates aGhostState)
+    public virtual void SetGhostBehaviour(GhostStates aGhostState, bool aActivateBehaviour)
     {
+
+        m_PreviousBehaviour = m_CurrentBehaviour;
         m_CurrentBehaviour = m_GhostBehaviours[aGhostState];
-        
+
+        if (aActivateBehaviour)
+        {
+            ActivateGhostBehaviour();
+        }
+
     }
 
     public void ActivateGhostBehaviour()
     {
-        m_CurrentBehaviour.StartMoving();
+        m_CurrentBehaviour.ActivateBehaviour();
     }
 
-
+    public virtual Behaviour GetGhostBehaviour(GhostStates aGhostStates)
+    {
+        return m_GhostBehaviours[aGhostStates]; 
+    }
+    
+    
 
     private void OnTriggerEnter(Collider other)
     {
-        GameManager.instance.ChangeLives(-1);
-        
+        m_CurrentBehaviour.PacmanContact();
+
     }
 }

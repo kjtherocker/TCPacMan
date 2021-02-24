@@ -12,10 +12,21 @@ public class Behaviour
 
     protected Vector2Int m_GoalPosition;
     
-    protected float m_GhostSpeed = 2.5f;
+    protected float m_GhostSpeed = 7.5f;
+
+    protected float m_TimerEnd;
+    protected float m_CurrentTimer;
+
+    protected Material m_GhostMaterial;
+    
     public virtual void Initialize()
     {
         
+    }
+
+    public void SetTimer(float aTimer)
+    {
+        m_TimerEnd = aTimer;
     }
 
     public void SetGhost(Ghosts aGhost)
@@ -23,7 +34,7 @@ public class Behaviour
         m_Ghost = aGhost;
     }
 
-    public virtual void StartMoving()
+    public virtual void ActivateBehaviour()
     {
         m_Paths = m_Ghost.CalculatePath(m_GoalPosition);
         NextMove();
@@ -31,14 +42,17 @@ public class Behaviour
      
     public virtual void UpdateBehaviour()
     {
-
+        if (m_Paths[0] != null)
+        {
+            DirectMovement(m_Ghost.gameObject.transform, m_Paths[0], m_GhostSpeed);
+        }
     }
 
     public virtual void NextMove()
     {
         if (m_Paths.Count <= 0)
         {
-            StartMoving();
+            ActivateBehaviour();
             return;
         }
 
@@ -55,37 +69,34 @@ public class Behaviour
         m_Ghost.SetCurrentFloorNode(m_Paths[0]);
         m_Paths.RemoveAt(0);
         
-        Debug.Log(m_Ghost.transform.position  + "  and " + m_Paths[0].gameObject.transform.position);
-        
-        m_Ghost.ProcessBehaviour(DirectMovement(m_Ghost.gameObject.transform, m_Paths[0], m_GhostSpeed));
-
         
     }
 
-    
-    public  IEnumerator DirectMovement(Transform aObject, FloorNode  aTargetNode, float aTimeUntilDone)
+    public virtual void PacmanContact()
+    {
+        GameManager.instance.ChangeLives(-1);
+    }
+
+
+    public  void DirectMovement(Transform aObject, FloorNode  aTargetNode, float aTimeUntilDone)
     {
         Vector3 NewNodePosition = new Vector3(aTargetNode.transform.position.x,aTargetNode.transform.position.y + 2,
             aTargetNode.transform.position.z);
 
         float timeTaken = 0.0f;
+ 
+        
 
-        while (aTimeUntilDone - timeTaken > 0)
+        if (Vector3.Distance(aObject.transform.position, NewNodePosition) < 0.5f)
         {
-            if (Vector3.Distance(aObject.transform.position, NewNodePosition) < 0.00001f)
-            {
-                timeTaken = aTimeUntilDone;
-            }
-
-            timeTaken += Time.deltaTime;
-            aObject.position = Vector3.MoveTowards(aObject.position, NewNodePosition, timeTaken /aTimeUntilDone );
-            yield return null;
+            m_Ghost.m_CurrentNode = aTargetNode;
+            NextMove();    
+            return;
         }
+        
+        aObject.position = Vector3.MoveTowards(aObject.position, NewNodePosition, aTimeUntilDone * Time.deltaTime);
 
-        aObject.position = NewNodePosition;
-        m_Ghost.SetCurrentFloorNode(aTargetNode);
-        NextMove();
-        yield return 0;
+        
     }
 
 }
