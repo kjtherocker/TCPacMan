@@ -17,36 +17,39 @@ public class FloorManager : MonoBehaviour
         Empty = 0,
         Pellet = 1,
         Ghostbuster = 2,
-        Strawberry = 3,
-       
     }
     
-    //TODO spawn the arena somewhere and latch onto it
 
     public Floor m_FloorCore;
     public FloorNode[] m_FloorNodes;
     public FloorNode m_FloorNodePrefab;
     private Dictionary<Floor.FloorDirections, Vector2Int>  m_CardinalPositions;
-
-    public NodeInfo[] m_NodeInfoArray;
+    public NodeInfo[] m_NodeInfoArray {get;  private set;}
     
     
+    //Empty Game Objects to spawn under
     public GameObject m_Node;
-
-    public PlayerController m_PacMan;
-    public GameObject m_Pellet;
-    public GameObject m_Ghostbuster;
-    
     public GameObject m_Gimmicks;
     
-    private List<GameObject> m_PelletPool;
-    public List<GameObject> m_GimmickList;
     
-    public void Start()
+    private GameObject m_Pellet;
+    private GameObject m_Ghostbuster;
+    private PlayerController m_PacMan;
+    
+    //ObjectPools
+    public List<GameObject> m_PelletPool {get;  private set;}
+    public List<GameObject> m_GhostBusterPool {get;  private set;}
+    
+    public void Initialize(PlayerController aPacman)
     {
+        m_PacMan = aPacman;
+        
         InitializeCardinalPositions();
-        SpawnCamera();
+        SpawnPacman();
+
         m_FloorCore.SpawnGhosts();
+        m_Pellet = Resources.Load<GameObject>("Gimmicks/Prefab_Pellet");
+        m_Ghostbuster = Resources.Load<GameObject>("Gimmicks/Prefab_GhostBuster");
     }
 
 
@@ -68,7 +71,7 @@ public class FloorManager : MonoBehaviour
     {
         m_FloorCore.GhostDoorOffset();
 
-        m_NodeInfoArray = new NodeInfo[20 * 20];
+        m_NodeInfoArray = new NodeInfo[m_FloorCore.m_GridDimensionX * m_FloorCore.m_GridDimensionY];
         for (int i = 0; i < m_NodeInfoArray.Length; i++)
         {
             if (m_FloorNodes[i] == null)
@@ -78,15 +81,22 @@ public class FloorManager : MonoBehaviour
 
             m_NodeInfoArray[i] = m_FloorNodes[i].GetNodeInfo();
         }
-        
-        
-        FloorNode ghostDoorNeightborOffset = GetNode(m_FloorCore.m_GhostDoorNeightbor);
-        int ghostDoorIndex = m_FloorCore.GetIndex(m_FloorCore.m_GhostDoorPosition);
-        m_NodeInfoArray[ghostDoorIndex].m_Neighbours.Add(ghostDoorNeightborOffset);
-        
 
+
+
+        AddAdditionalNeighbors(m_FloorCore.m_GhostDoorPosition, m_FloorCore.m_GhostDoorNeightbor);
 
     }
+
+    public void AddAdditionalNeighbors(Vector2Int aInitialObject, Vector2Int aNeightbor)
+    {
+        FloorNode ghostDoorNeightborOffset = GetNode(aNeightbor);
+        int ghostDoorIndex = m_FloorCore.GetIndex(aInitialObject);
+        m_NodeInfoArray[ghostDoorIndex].m_Neighbours.Add(ghostDoorNeightborOffset);
+        
+    }
+
+
 
     public void SpawnGhosts(Ghosts[] aGhosts)
     {
@@ -105,7 +115,7 @@ public class FloorManager : MonoBehaviour
 
     public void CreateGrid()
     {
-        m_FloorCore.Intialize();
+        m_FloorCore.Initialize();
 
         if (m_FloorNodes.Length > 0 && m_FloorNodes != null)
         {
@@ -160,26 +170,93 @@ public class FloorManager : MonoBehaviour
 
                 SpawnNode(x , y,LevelIndex );
                 
-                m_FloorNodes[LevelIndex].Initialize(aLevelBlueprint[LevelIndex]);
+                m_FloorNodes[LevelIndex].Initialize(aLevelBlueprint[LevelIndex], this);
             }
         }
     }
 
-    public void GenerateGimmicks()
+    public void GenerateGimmickPools()
     {
-        if (m_GimmickList.Count > 0 )
+        
+        m_PelletPool = new List<GameObject>();
+        m_GhostBusterPool = new List<GameObject>();
+        
+        for (int x = 0; x < m_FloorCore.m_GridDimensionX; x++)
         {
-            for (int i = m_GimmickList.Count - 1; i > 0; i--)
+            for (int y = 0; y < m_FloorCore.m_GridDimensionY; y++)
             {
-                if(m_GimmickList[i] == null)
+                int LevelIndex = m_FloorCore.GetIndex(x, y);
+                //If there is no node then continue
+                if (m_FloorCore.m_GoalsBlueprint[LevelIndex] == (short) FloorGimmicks.Empty)
                 {
                     continue;
                 }
-            
-                Destroy(m_GimmickList[i].gameObject);
-                m_GimmickList.RemoveAt(i);
+                
+                CreateGimmickPools( m_FloorCore.m_GoalsBlueprint[LevelIndex]);
+
             }
         }
+    }
+    
+    public void CreateGimmickPools( short aGimmickType)
+    {
+        GameObject gimmickToSpawn = null;
+        Vector3 nodeOffset = new Vector3(0,2,0);
+        switch (aGimmickType)
+        {
+            case (short)FloorGimmicks.Pellet:
+                gimmickToSpawn = Instantiate(m_Pellet,m_Gimmicks.transform);
+                gimmickToSpawn.SetActive(false);
+                m_PelletPool.Add(gimmickToSpawn);
+                
+                break;
+            
+            case (short)FloorGimmicks.Ghostbuster:
+                gimmickToSpawn = Instantiate(m_Ghostbuster,m_Gimmicks.transform);
+                gimmickToSpawn.SetActive(false);
+                m_GhostBusterPool.Add(gimmickToSpawn);
+                
+                break;
+            
+  
+            
+        }
+    }
+    
+    public void SpawnGimmickPools()
+    {
+        TurnObjectsInPoolOff( m_PelletPool);
+        TurnObjectsInPoolOff( m_GhostBusterPool);
+        
+        for (int x = 0; x < m_FloorCore.m_GridDimensionX; x++)
+        {
+            for (int y = 0; y < m_FloorCore.m_GridDimensionY; y++)
+            {
+                int LevelIndex = m_FloorCore.GetIndex(x, y);
+                //If there is no node then continue
+                if (m_FloorCore.m_GoalsBlueprint[LevelIndex] == (short) FloorGimmicks.Empty)
+                {
+                    continue;
+                }
+                
+                RespawnGimmicks();
+
+            }
+        }
+    }
+
+    public void TurnObjectsInPoolOff( List<GameObject> aList)
+    {
+        for (int i = 0; i < aList.Count; i++)
+        {
+            aList[i].SetActive(false);
+        }
+
+    }
+
+
+    public void RespawnGimmicks()
+    {
 
 
         for (int x = 0; x < m_FloorCore.m_GridDimensionX; x++)
@@ -198,44 +275,68 @@ public class FloorManager : MonoBehaviour
             }
         }
     }
-
+    
     public void SpawnGimmick(FloorNode aFloornode, short aGimmickType)
     {
         GameObject gimmickToSpawn = null;
-        Vector3 nodeOffset = new Vector3(0,2,0);
         switch (aGimmickType)
         {
             case (short)FloorGimmicks.Pellet:
-                gimmickToSpawn = Instantiate(m_Pellet,m_Gimmicks.transform);
-                gimmickToSpawn.transform.position = aFloornode.transform.position + nodeOffset;
-                m_PelletPool.Add(gimmickToSpawn);
-                
+                gimmickToSpawn = GetInActiveGimmickObject( m_PelletPool);
+                if (gimmickToSpawn == null)
+                {
+                    return;
+                }
+
+                gimmickToSpawn.transform.position = aFloornode.transform.position +  Helpers.Constants.HeightOffGrid;;
+
                 break;
             
             case (short)FloorGimmicks.Ghostbuster:
-                gimmickToSpawn = Instantiate(m_Ghostbuster,m_Gimmicks.transform);
-                gimmickToSpawn.transform.position = aFloornode.transform.position + nodeOffset;
+                gimmickToSpawn = GetInActiveGimmickObject( m_GhostBusterPool);
+                if (gimmickToSpawn == null)
+                {
+                    return;
+                }
+                
+                gimmickToSpawn.transform.position = aFloornode.transform.position + Helpers.Constants.HeightOffGrid;;
                 
                 
                 break;
-            
-            case (short)FloorGimmicks.Strawberry:
-                break;
-            
         }
         
-        m_GimmickList.Add(gimmickToSpawn);
+
     }
+    
 
 
 
-    public void SpawnCamera()
+
+
+    public GameObject GetInActiveGimmickObject( List<GameObject> aGimmick)
+    {
+        for (int i = 0; i < aGimmick.Count; i++)
+        {
+            if (aGimmick[i].gameObject.activeInHierarchy == false)
+            {
+                aGimmick[i].SetActive(true);
+               return aGimmick[i];
+            }
+        }
+
+  
+        return null;
+
+    }
+    
+
+    public void SpawnPacman()
     {
         int LevelIndex = m_FloorCore.GetIndex(
             m_FloorCore.m_DefaultSpawnPosition.x, m_FloorCore.m_DefaultSpawnPosition.y);
 
         Vector3 m_NodePosition = m_FloorNodes[LevelIndex].gameObject.transform.position;
-        Vector3 m_PositionOffset = new Vector3(0,2,0);
+        Vector3 m_PositionOffset =  Helpers.Constants.HeightOffGrid;
 
         m_PacMan.m_CurrentNode = m_FloorNodes[LevelIndex];
         m_PacMan.m_CurrentPosition = m_FloorCore.m_DefaultSpawnPosition;
@@ -290,7 +391,7 @@ public class FloorManager : MonoBehaviour
     
     public FloorNode GetNode(Vector2Int aPosition)
     {
-        if (aPosition.x > m_FloorCore.m_GridDimensionX || aPosition.y > m_FloorCore.m_GridDimensionY ||
+        if (aPosition.x >= m_FloorCore.m_GridDimensionX || aPosition.y >= m_FloorCore.m_GridDimensionY ||
             aPosition.x < 0 || aPosition.y < 0)
         {
             return null;
@@ -311,8 +412,7 @@ public class FloorManager : MonoBehaviour
         m_FloorNodes[aIndex].gameObject.name  = aRow + " " + aColumn;
         m_FloorNodes[aIndex].transform.position = new Vector3(4 * aRow, 0.5f, 4 * aColumn);
         m_FloorNodes[aIndex].m_NodeFloorManager = this;
-
-        //  m_GridPathArray[x, y].m_Grid = m_Grid;
+        
     }
 }
 

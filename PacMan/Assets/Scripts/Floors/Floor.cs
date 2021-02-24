@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+
+
+
+
 [ExecuteInEditMode]
 public class Floor : MonoBehaviour
 {
@@ -33,8 +37,7 @@ public class Floor : MonoBehaviour
     public short[] m_FloorBlueprint;
     
     public short[] m_GoalsBlueprint;
-
-
+        
     //To open up the ghost door so that ghosts can pathfind through it
     public  Vector2Int m_GhostDoorPosition;
     public  Vector2Int m_GhostDoorNeightbor;
@@ -44,7 +47,7 @@ public class Floor : MonoBehaviour
     public Vector2Int m_DefaultSpawnPosition;
 
     // Start is called before the first frame update
-    public virtual void Intialize()
+    public virtual void Initialize()
     {
         m_GridDimensionX = 10;
         m_GridDimensionY = 10;
@@ -126,6 +129,12 @@ public class Floor : MonoBehaviour
     public virtual void SpawnGhosts()
     {
 
+    }
+    
+    public virtual void TeleporterPositions()
+    {
+
+     
     }
 
 }

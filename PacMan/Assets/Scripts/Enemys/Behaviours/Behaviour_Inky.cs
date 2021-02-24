@@ -12,10 +12,9 @@ public class Behaviour_Inky : Behaviour
     {
         base.Initialize(aGhost,aPacman,aFloorManager);
         
-        m_CalculationRefreshRate = 1;
-        m_GhostSpeed = 10.5f;
-        m_GoalPosition = m_Ghost.m_Pacman.m_CurrentPosition;
-        m_TimerEnd = 10;
+        m_CalculationRefreshRate = Helpers.Constants.GhostFrameRecalculation;
+        m_GhostSpeed = Helpers.Constants.GhostNormalSpeed;
+        m_TimerEnd = Helpers.Constants.GhostAggressiveTime;
     }
 
 
@@ -25,7 +24,7 @@ public class Behaviour_Inky : Behaviour
         Vector2Int Difference = m_Blinky.m_CurrentNode.m_PositionInGrid - m_Ghost.m_Pacman.m_CurrentNode.m_PositionInGrid;
 
 
-        FloorNode currentNodeDifference = m_FloorManager.GetNode(m_Pacman.m_CurrentPosition + Difference * 2);
+        FloorNode currentNodeDifference = m_FloorManager.GetNode(m_Pacman.m_CurrentPosition + Difference);
         
         if (currentNodeDifference == null)
         {
@@ -67,12 +66,27 @@ public class Behaviour_Inky : Behaviour
         }
     }
 
+    public void Reset()
+    {
+
+        m_GoalPosition = CalculateBlinkyDistanceFromPacman();
+        m_Paths = m_Ghost.CalculatePath(m_GoalPosition);
+
+        if (m_Paths.Count <= 1)
+        {
+            m_Paths = m_Ghost.CalculatePath(m_Pacman.m_CurrentPosition);
+        }
+
+        m_CurrentTimer = 0;
+        NextMove();
+    }
+
     public override void NextMove()
     {
 
         if (m_Paths.Count <= 1)
         {
-            ActivateBehaviour();
+            Reset();
             return;
         }
 

@@ -21,9 +21,7 @@ public class PlayerController : MonoBehaviour
     public Floor.FloorDirections m_CurrentDirection;
     public Floor.FloorDirections m_NextDirection;
     public int m_CurrentDirectionValue;
-
-   // public List<> m_DeathObservers;
-
+    
     public Vector3 m_SpawnPosition;
     public FloorNode m_StartNode;
     public FloorNode m_CurrentNode;
@@ -41,7 +39,7 @@ public class PlayerController : MonoBehaviour
 
     private PlayerInput m_MovementControls;
 
-    private float m_PacManSpeed = 17;
+    private float m_PacManSpeed = Helpers.Constants.PacManSpeed;
     private float m_MiniumDistanceBetweenNodes = 0.05f;
     private float m_MaxDistanceForDirectionChange = 2.25f;
     
@@ -123,8 +121,7 @@ public class PlayerController : MonoBehaviour
 
     public  void DirectMovement(Transform aObject, FloorNode  aTargetNode, float aTimeUntilDone)
     {
-        Vector3 NewNodePosition = new Vector3(aTargetNode.transform.position.x,aTargetNode.transform.position.y + 2,
-            aTargetNode.transform.position.z);
+        Vector3 NewNodePosition =  aTargetNode.transform.position + Helpers.Constants.HeightOffGrid;
 
         float timeTaken = 0.0f;
         m_IsMoving = true;
@@ -138,10 +135,7 @@ public class PlayerController : MonoBehaviour
         
         aObject.position = Vector3.MoveTowards(aObject.position, NewNodePosition, m_PacManSpeed * Time.deltaTime);
         
-      //  Vector3 relativePos = NewNodePosition - transform.position;
-      // 
-      //  Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
-      //  transform.rotation = rotation;
+
     }
 
     
@@ -183,6 +177,7 @@ public class PlayerController : MonoBehaviour
         
             if (TargetNode == null)
             {
+             
                 Debug.Log("Cant Find Node " + m_CurrentNode.m_PositionInGrid);
                 return;
             }

@@ -12,17 +12,16 @@ public class Behaviour_Clyde : Behaviour
     public override void Initialize(Ghosts aGhost , PlayerController aPacman, FloorManager aFloorManager)
     {
         base.Initialize(aGhost,aPacman,aFloorManager);
-
-
-        m_GhostSpeed = 10.5f;
-        m_GoalPosition = m_Ghost.m_Pacman.m_CurrentPosition;
-        m_TimerEnd = 10;
+        
+        m_CalculationRefreshRate = Helpers.Constants.GhostFrameRecalculation;
+        m_GhostSpeed = Helpers.Constants.GhostNormalSpeed;
+        m_TimerEnd = Helpers.Constants.GhostAggressiveTime;
     }
 
 
     public Vector2Int RandomNode()
     {
-        return GameManager.instance.m_FloorManager.GetRandomNode().m_PositionInGrid;
+        return m_FloorManager.GetRandomNode().m_PositionInGrid;
     }
 
     public override void ActivateBehaviour()
@@ -64,13 +63,21 @@ public class Behaviour_Clyde : Behaviour
             }
         }
     }
+    
+    public void Reset()
+    {
+        m_GoalPosition = m_Ghost.m_Pacman.m_CurrentNode.m_PositionInGrid;
+        m_Paths = m_Ghost.CalculatePath(m_GoalPosition);
+        m_CurrentTimer = 0;
+        NextMove();
+    }
 
     public override void NextMove()
     {
 
         if (m_Paths.Count <= 1)
         {
-            ActivateBehaviour();
+            Reset();
             return;
         }
         

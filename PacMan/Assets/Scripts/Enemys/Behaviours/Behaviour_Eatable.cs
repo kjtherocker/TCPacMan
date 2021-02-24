@@ -8,8 +8,8 @@ public class Behaviour_Eatable : Behaviour
     {
         base.Initialize(aGhost,aPacman,aFloorManager);
 
-        m_GhostSpeed = 2.5f;
-        m_TimerEnd = 10;
+        m_GhostSpeed = Helpers.Constants.GhostEatableSpeed;
+        m_TimerEnd = Helpers.Constants.GhostEatbleTime;
         m_GhostMaterial = Resources.Load<Material>("Ghost/Material_EatableGhost");
     }
     
@@ -40,13 +40,22 @@ public class Behaviour_Eatable : Behaviour
         }
     }
 
+    
+    public void Reset()
+    {
+        m_GoalPosition = m_Ghost.m_Pacman.m_CurrentNode.m_PositionInGrid;
+        m_Paths = m_Ghost.CalculatePath(m_GoalPosition);
+        NextMove();
+    }
+
+    
     public override void NextMove()
     {
         m_Paths.RemoveAt(0);
         
         if (m_Paths.Count <= 0)
         {
-            m_Ghost.SetGhostBehaviour(Ghosts.GhostStates.GhostUnique,true);
+            Reset();
             return;
         }
     }

@@ -43,10 +43,10 @@ public class FloorNode : MonoBehaviour
 
     // Use this for initialization
 
-    public int THISISTESTREMOVE = 0;
-
-    public void Initialize(short aWalkableDirections)
+    public void Initialize(short aWalkableDirections, FloorManager aFloorManager)
     {
+
+        m_NodeFloorManager = aFloorManager; 
         SetWalkableDirections(aWalkableDirections);
         
     }
@@ -54,7 +54,7 @@ public class FloorNode : MonoBehaviour
     public NodeInfo GetNodeInfo()
     {
         m_NodeInfo = new NodeInfo();
-        m_NodeInfo.m_Neighbours = GetNeighbours(GameManager.instance.m_FloorManager);
+        m_NodeInfo.m_Neighbours = GetNeighbours(m_NodeFloorManager);
         Testneightbors = m_NodeInfo.m_Neighbours;
         m_NodeInfo.m_PositionInGrid = m_PositionInGrid; 
         return m_NodeInfo;
@@ -77,7 +77,7 @@ public class FloorNode : MonoBehaviour
         
         foreach(Floor.FloorDirections node in m_WalkableDirections)
         {
-            NodeWalls[(int)node].SetActive(false);
+            DestroyImmediate(NodeWalls[(int)node].gameObject);
         }
 
     }

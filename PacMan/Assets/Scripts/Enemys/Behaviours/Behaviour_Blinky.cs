@@ -10,10 +10,9 @@ public class Behaviour_Blinky : Behaviour
     {
         base.Initialize(aGhost,aPacman,aFloorManager);
 
-        m_CalculationRefreshRate = 2;
-        m_GhostSpeed = 10.5f;
-        m_GoalPosition = m_Pacman.m_CurrentPosition;
-        m_TimerEnd = 10;
+        m_CalculationRefreshRate = Helpers.Constants.GhostFrameRecalculation;
+        m_GhostSpeed = Helpers.Constants.GhostNormalSpeed;
+        m_TimerEnd = Helpers.Constants.GhostAggressiveTime;
     }
     
     public override void ActivateBehaviour()
@@ -43,12 +42,21 @@ public class Behaviour_Blinky : Behaviour
         }
     }
     
+    public void Reset()
+    {
+        m_GoalPosition = m_Pacman.m_CurrentPosition;
+        m_Paths = m_Ghost.CalculatePath(m_GoalPosition);
+        m_CurrentTimer = 0;
+        NextMove();
+    }
+
+    
     public override void NextMove()
     {
         
         if (m_Paths.Count <= 1)
         {
-            ActivateBehaviour();
+            Reset();
             return;
         }
 

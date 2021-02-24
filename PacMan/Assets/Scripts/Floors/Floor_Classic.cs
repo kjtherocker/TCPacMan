@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class Floor_Classic : Floor
 {
     // Start is called before the first frame update
-    public override void Intialize()
+
+
+    
+    public override void Initialize()
     {
         m_GridDimensionX = 20;
         m_GridDimensionY = 20;
         
- 
-
 
         m_FloorBlueprint = new short[]
         {   
@@ -22,7 +25,7 @@ public class Floor_Classic : Floor
              8, 11, 13,  0,  8,  9,  0, 10,  7,  0, 14, 11,  7,  0,  0,  0,  0,  0,  0,  0, //5
              0,  0,  6,  0, 0,   6,  0,  6,  0,  0,  6,  0,  0,  0,  0,  0,  0,  0,  0,  0, //6
              0,  0,  6,  0, 10, 12, 11, 12,  9,  0,  6,  0,  0,  0,  0,  0,  0,  0,  0,  0, //7
-            11, 11,  5, 11, 13,  4, 12,  3, 14, 11,  5, 11, 11,  0,  0,  0,  0,  0,  0,  0, //8
+             0,  0, 14, 11, 13,  4, 12,  3, 14, 11, 13,  0, 0,  0,  0,  0,  0,  0,  0,  0, //8
              0,  0,  6,  0, 14, 11, 11, 11, 13,  0,  6,  0,  0,  0,  0,  0,  0,  0,  0,  0, //9
              0,  0,  6,  0,  6,  0,  0,  0,  6,  0,  6,  0,  0,  0,  0,  0,  0,  0,  0,  0, //10
             10, 11,  5, 11, 12,  9,  0, 10, 12, 11,  5, 11,  9,  0,  0,  0,  0,  0,  0,  0, //11
@@ -66,15 +69,17 @@ public class Floor_Classic : Floor
         
         
 
-        SpawnCamera();
+        SpawnPlayer();
         SpawnGhosts();
     }
     
-    public virtual void SpawnCamera()
+    public virtual void SpawnPlayer()
     {
         m_DefaultSpawnPosition = new Vector2Int(12,6);
     }
-    
+
+
+
     public override void SpawnGhosts()
     {
         m_GhostSpawnPositions = new Dictionary<Ghosts.GhostTypes, Vector2Int>();

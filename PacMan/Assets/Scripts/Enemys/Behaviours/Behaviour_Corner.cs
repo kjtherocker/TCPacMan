@@ -7,8 +7,8 @@ public class Behaviour_Corner : Behaviour
     public override void Initialize(Ghosts aGhost , PlayerController aPacman, FloorManager aFloorManager)
     {
         base.Initialize(aGhost,aPacman,aFloorManager);
-
-        m_GhostSpeed = 9.5f;
+        
+        m_GhostSpeed = Helpers.Constants.GhostNormalSpeed;
     }
     
     public override void ActivateBehaviour()

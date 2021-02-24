@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+
+
 public class GameManager : Singleton<GameManager>
 {
 
@@ -19,22 +21,28 @@ public class GameManager : Singleton<GameManager>
     private Ghosts[] m_Ghosts;
     private List<Ghosts> m_GhostsToActivate;
     
-    private float m_GhostMoveDelay = 2;
-    
+    private float m_GhostMoveDelay = Helpers.Constants.GhostStartDelay;
+    private int m_PelletsLeft;
+
     public void Start()
     {
         m_FloorManager = GetComponentInChildren<FloorManager>();
         m_Pacman = GetComponentInChildren<PlayerController>();
         m_Ghosts = GetComponentsInChildren<Ghosts>();
 
+        
+
+        
         m_GhostsToActivate = new List<Ghosts>();
         for (int i = 0; i < m_Ghosts.Length; i++)
         {
             m_GhostsToActivate.Add(m_Ghosts[i]);
         }
-
-        m_FloorManager.Start();
+        
+        
+        m_FloorManager.Initialize(m_Pacman);
         m_FloorManager.SpawnNodeInfo();
+        
         //Initializing the ghosts 
         for (int i = 0; i < m_Ghosts.Length; i++)
         {
@@ -49,7 +57,7 @@ public class GameManager : Singleton<GameManager>
             m_Ghosts[i].CopyFloor(m_FloorManager.m_NodeInfoArray);
             m_Ghosts[i].GetGhostBehaviour(Ghosts.GhostStates.Standby).SetTimer(m_GhostMoveDelay * timeMultiplyer);
         }
-        
+        m_FloorManager.GenerateGimmickPools();
         StartPacman();
     }
     
@@ -57,15 +65,16 @@ public class GameManager : Singleton<GameManager>
 
     public void StartPacman()
     {
-        m_Lives = 3;
+        m_Lives = Helpers.Constants.PlayerLives;
         m_Score = 0;
 
         m_TextScore.text = m_Score.ToString();
         m_TextLives.text = m_Lives.ToString();
 
-        m_FloorManager.GenerateGimmicks();
-        m_FloorManager.m_PacMan = m_Pacman;
+        m_PelletsLeft = m_FloorManager.m_PelletPool.Count;
         
+
+        m_FloorManager.SpawnGimmickPools();
         m_Pacman.SetPacManState(PlayerController.PacmanStates.Start);
         m_Pacman.ReturnToSpawn();
         
@@ -91,6 +100,16 @@ public class GameManager : Singleton<GameManager>
 
         m_TextGetReady.gameObject.SetActive(false);
         m_Pacman.SetPacManState(PlayerController.PacmanStates.Normal);
+
+    }
+
+    public void ChangeAmountOfPelletes()
+    {
+        m_PelletsLeft--;
+        if (m_PelletsLeft <= 0)
+        {
+            StartPacman();
+        }
 
     }
 

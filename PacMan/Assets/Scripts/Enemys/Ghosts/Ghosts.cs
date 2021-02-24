@@ -181,7 +181,7 @@ public class Ghosts : MonoBehaviour
 
         while (m_PathToFollow.Count -1 < m_FloorCopy[currentindex].m_MovementCost)
         {
-            int pathiIndex = GameManager.instance.m_FloorManager.m_FloorCore.GetIndex(m_PathToFollow[m_PathToFollow.Count -1].m_PositionInGrid);
+            int pathiIndex = m_FloorManager.m_FloorCore.GetIndex(m_PathToFollow[m_PathToFollow.Count -1].m_PositionInGrid);
             m_PathToFollow.Add(CheckNeighborsForLowestNumber(m_FloorCopy[pathiIndex]));
         }
 
@@ -246,8 +246,7 @@ public class Ghosts : MonoBehaviour
 
              m_FloorCopy[newindex].m_MovementCost =  m_FloorCopy[Spawnindex].m_MovementCost + 1;
              m_FloorCopy[newindex].m_HeuristicCalculated = true;
-             floorNode.THISISTESTREMOVE = m_FloorCopy[Spawnindex].m_MovementCost + 1;
-             
+
              m_OpenList.Add(m_FloorCopy[newindex]);
              
          }
@@ -257,7 +256,7 @@ public class Ghosts : MonoBehaviour
     {
         m_CurrentNode = aFloorNode;
         transform.position =
-            m_CurrentNode.transform.position + new Vector3(0,2,0);
+            m_CurrentNode.transform.position + Helpers.Constants.HeightOffGrid;
     }
 
     public virtual void SetGhostBehaviour(GhostStates aGhostState, bool aActivateBehaviour)

@@ -11,10 +11,9 @@ public class Behaviour_Pinky : Behaviour
     {
         base.Initialize(aGhost,aPacman,aFloorManager);
 
-        m_CalculationRefreshRate = 1;
-        m_GhostSpeed = 10.5f;
-        m_GoalPosition = m_Ghost.m_Pacman.m_CurrentPosition;
-        m_TimerEnd = 10;
+        m_CalculationRefreshRate = Helpers.Constants.GhostFrameRecalculation;
+        m_GhostSpeed = Helpers.Constants.GhostNormalSpeed;
+        m_TimerEnd = Helpers.Constants.GhostAggressiveTime;
     }
 
 
@@ -71,6 +70,16 @@ public class Behaviour_Pinky : Behaviour
         m_CurrentTimer = 0;
         NextMove();
     }
+    
+    
+    public void Reset()
+    {
+
+        m_GoalPosition = GetFurthestAvaliableWallFromPacman();
+        m_Paths = m_Ghost.CalculatePath(m_GoalPosition);
+        m_CurrentTimer = 0;
+        NextMove();
+    }
 
     public override void UpdateBehaviour()
     {
@@ -95,7 +104,7 @@ public class Behaviour_Pinky : Behaviour
 
         if (m_Paths.Count <= 1)
         {
-            ActivateBehaviour();
+            Reset();
             return;
         }
 

@@ -82,8 +82,7 @@ public class Behaviour
 
     public  void DirectMovement(Transform aObject, FloorNode  aTargetNode, float aTimeUntilDone)
     {
-        Vector3 NewNodePosition = new Vector3(aTargetNode.transform.position.x,aTargetNode.transform.position.y + 2,
-            aTargetNode.transform.position.z);
+        Vector3 NewNodePosition = aTargetNode.transform.position +  Helpers.Constants.HeightOffGrid;
 
         float timeTaken = 0.0f;
  

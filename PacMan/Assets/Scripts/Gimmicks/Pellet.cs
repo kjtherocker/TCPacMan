@@ -6,7 +6,9 @@ public class Pellet : Gimmick
 {
     public override void CollidedWithPacMan()
     {
-        GameManager.instance.ChangeScore(1);
         gameObject.SetActive(false);
+        GameManager.instance.ChangeScore(1);
+        GameManager.instance.ChangeAmountOfPelletes();
+        
     }
 }
