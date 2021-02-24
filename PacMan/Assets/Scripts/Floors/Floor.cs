@@ -36,7 +36,8 @@ public class Floor : MonoBehaviour
 
 
     //To open up the ghost door so that ghosts can pathfind through it
-    public Dictionary<Vector2Int, Vector2Int> m_GhostDoorOffset;
+    public  Vector2Int m_GhostDoorPosition;
+    public  Vector2Int m_GhostDoorNeightbor;
     
     public Dictionary<Ghosts.GhostTypes, Vector2Int> m_GhostSpawnPositions;
     public Dictionary<Ghosts.GhostTypes, Vector2Int> m_GhostCornerPositions;
@@ -116,11 +117,10 @@ public class Floor : MonoBehaviour
         m_DefaultSpawnPosition = new Vector2Int(0,1);
     }
 
-    public void GhostDoorOffset()
-    { 
-        List<Vector2Int> m_Neightbors;
-        
-        m_GhostDoorOffset.Add(new Vector2Int(6,6), new Vector2Int(7,6) );
+    public virtual void GhostDoorOffset()
+    {
+        m_GhostDoorPosition = new Vector2Int(6,6);
+        m_GhostDoorNeightbor = new Vector2Int(7,6);
     }
 
     public virtual void SpawnGhosts()

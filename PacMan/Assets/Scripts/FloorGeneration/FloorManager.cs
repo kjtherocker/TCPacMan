@@ -65,6 +65,8 @@ public class FloorManager : MonoBehaviour
 
     public void SpawnNodeInfo()
     {
+        m_FloorCore.GhostDoorOffset();
+
         m_NodeInfoArray = new NodeInfo[20 * 20];
         for (int i = 0; i < m_NodeInfoArray.Length; i++)
         {
@@ -75,6 +77,14 @@ public class FloorManager : MonoBehaviour
 
             m_NodeInfoArray[i] = m_FloorNodes[i].GetNodeInfo();
         }
+        
+        
+        FloorNode ghostDoorNeightborOffset = GetNode(m_FloorCore.m_GhostDoorNeightbor);
+        int ghostDoorIndex = m_FloorCore.GetIndex(m_FloorCore.m_GhostDoorPosition);
+        m_NodeInfoArray[ghostDoorIndex].m_Neighbours.Add(ghostDoorNeightborOffset);
+        
+
+
     }
 
     public void SpawnGhosts(Ghosts[] aGhosts)
@@ -244,9 +254,6 @@ public class FloorManager : MonoBehaviour
             CurrentPosition.y + m_CardinalPositions[TargetDirection].y );
         
         int FinalIndex = m_FloorCore.GetIndex( FinalPosition.x,FinalPosition.y) ;
-        
-       // Debug.Log("Current position " + CurrentPosition + " TargetDirection " + m_CardinalPositions[TargetDirection] + " Final index: " + FinalIndex
-      //   + " Final Position: " + FinalPosition);
         
         return m_FloorNodes[FinalIndex] ;
     }
