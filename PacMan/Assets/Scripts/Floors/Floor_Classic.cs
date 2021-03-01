@@ -7,9 +7,6 @@ using UnityEngine;
 public class Floor_Classic : Floor
 {
     // Start is called before the first frame update
-
-
-    
     public override void Initialize()
     {
         m_GridDimensionX = 20;

@@ -42,6 +42,6 @@ public class Behaviour_ReturnToSpawn : Behaviour
 
     public override void PacmanContact()
     {
-        
+        AudioManager.instance.PlaySoundOneShot(AudioManager.AudioClips.Death, AudioManager.Soundtypes.SoundEffects);
     }
 }

@@ -62,6 +62,7 @@ public class Behaviour_Eatable : Behaviour
 
     public override void PacmanContact()
     {
+        AudioManager.instance.PlaySoundOneShot(AudioManager.AudioClips.EatGhost, AudioManager.Soundtypes.SoundEffects);
         m_Ghost.SetGhostBehaviour(Ghosts.GhostStates.Death,true);
     }
 

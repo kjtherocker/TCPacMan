@@ -12,7 +12,7 @@ namespace Helpers
         
         public static float PacManSpeed = 17;
 
-        public static float GhostStartDelay = 2.0f;
+        public static float GhostStartDelay = 4.0f;
         
         public static float GhostNormalSpeed = 10.05f;
         public static float GhostEatableSpeed = 2.5f;

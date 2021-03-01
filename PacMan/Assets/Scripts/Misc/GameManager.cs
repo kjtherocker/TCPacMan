@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Helpers;
 using TMPro;
 using UnityEngine;
 
@@ -29,10 +30,9 @@ public class GameManager : Singleton<GameManager>
         m_FloorManager = GetComponentInChildren<FloorManager>();
         m_Pacman = GetComponentInChildren<PlayerController>();
         m_Ghosts = GetComponentsInChildren<Ghosts>();
-
         
 
-        
+        AudioManager.instance.Intialize();
         m_GhostsToActivate = new List<Ghosts>();
         for (int i = 0; i < m_Ghosts.Length; i++)
         {
@@ -65,7 +65,7 @@ public class GameManager : Singleton<GameManager>
 
     public void StartPacman()
     {
-        m_Lives = Helpers.Constants.PlayerLives;
+        m_Lives = Constants.PlayerLives;
         m_Score = 0;
 
         m_TextScore.text = m_Score.ToString();
@@ -78,6 +78,7 @@ public class GameManager : Singleton<GameManager>
         m_Pacman.SetPacManState(PlayerController.PacmanStates.Start);
         m_Pacman.ReturnToSpawn();
         
+
         StartCoroutine(StartDelay());
         
         
@@ -90,12 +91,14 @@ public class GameManager : Singleton<GameManager>
         m_Pacman.SetPacManState(PlayerController.PacmanStates.Start);
         m_TextGetReady.gameObject.SetActive(true);
         
+        AudioManager.instance.PlaySoundOneShot(AudioManager.AudioClips.Beginning, AudioManager.Soundtypes.SoundEffects);
+        
         for (int i = 0; i < m_Ghosts.Length; i++)
         {
             m_Ghosts[i].SetGhostBehaviour(Ghosts.GhostStates.Standby,true);
         }
         
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(Constants.GhostStartDelay);
 
 
         m_TextGetReady.gameObject.SetActive(false);
